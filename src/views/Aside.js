@@ -1,8 +1,11 @@
 import React from "react";
 import { Layout, Menu, theme } from 'antd';
 import { Link, Route, Routes } from 'react-router-dom';
-import { UserOutlined, ToolOutlined, SettingOutlined } from '@ant-design/icons';
+import { UserOutlined, ToolOutlined, SettingOutlined,CalendarOutlined,FolderViewOutlined } from '@ant-design/icons';
 import Usuario from './Mantenimientos/Usuario';
+import TitulosAcademicos from './Mantenimientos/TitulosAcademicos';
+import Materias from './Mantenimientos/Materias';
+import VisualizarHorarios from './externos/VisualizarHorarios';
 
 const { Header, Content, Footer, Sider } = Layout;
 const items = [
@@ -19,19 +22,20 @@ const items = [
       {
         label: 'Titulos Academicos',
         icon: <ToolOutlined />,
-        destination: '/titulo_academico',
+        destination: 'Mantenimientos/titulo_academico',
+        element:<TitulosAcademicos/>
       },
       {
         label: 'Roles',
         icon: <ToolOutlined />,
-        destination: '/titulo_academico',
+        destination: 'Mantenimientos/roles',
         
       },
       {
         label: 'Materias',
         icon: <ToolOutlined />,
-        destination: '/materias',
-        
+        destination: 'Mantenimientos/materias',
+        element:<Materias/>
       },
       {
         label: 'Cursos',
@@ -61,6 +65,18 @@ const items = [
       },
     ],
   },
+  {
+    label:"Visualizar",
+    icon: <FolderViewOutlined />,
+    children:[
+        {
+        label: 'Horarios',
+        icon: <CalendarOutlined />,
+        destination: '/Visualizar/Horarios',
+        element: <VisualizarHorarios/>,
+      }, 
+      ]
+  }
 ];
 
 

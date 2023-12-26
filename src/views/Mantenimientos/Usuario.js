@@ -4,7 +4,7 @@ import FormItem from "antd/es/form/FormItem";
 import { ClearOutlined, FilterOutlined, SearchOutlined, FrownOutlined, MehOutlined, FrownFilled, UserOutlined, UserAddOutlined, EditOutlined, ToolOutlined, DeleteOutlined, SyncOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { render } from "@testing-library/react";
 import "../../public/css/letras.css";
-import ModalConfirmacion from "../../components/ConfirmarModal.js";
+
 
 const Usuario = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -23,16 +23,14 @@ const Usuario = () => {
   const [loadingButton, setLoadingButton] = useState(false);
   const [filtroRol, setFiltroRol] = useState([]);
   const [api, contextHolder] = notification.useNotification();
-  
+  const url = process.env.REACT_APP_BACKEND_HORARIOS;
   const openNotificationWithIcon = (type,mensaje,descripcion) => {
     api[type]({
       message: mensaje,
       description:descripcion,
     });
   };
-
-  const url = "http://localhost:8000/api/v1/horario/";
-
+  
   function ModalEditClose() {
     setDataUserEdit({});
     setModalOpenEdit(false);
@@ -175,7 +173,7 @@ const Usuario = () => {
                   cedula: <label className="letra-pequeña1">{value.cedula}</label>,
                   nombres_apellidos: <label className="letra-pequeña1">{value.nombres}</label>,
                   usuario: <label className="letra-pequeña1">{value.usuario}</label>,
-                  rol: <label className="letra-pequeña1">{value.id_rol}</label>,
+                  rol: <label className="letra-pequeña1">{value.id_rol.descripcion}</label>,
                   fecha_creacion: <label className="letra-pequeña1">{new Date(value.created_at).toLocaleDateString('es-ES')}</label>,
                   fecha_actualizacion: <label className="letra-pequeña1">{new Date(value.updated_at).toLocaleDateString('es-ES')}</label>,
                   titulo_academicos: titulos
@@ -263,7 +261,7 @@ const Usuario = () => {
           nombres: values.nombres + " " + values.apellidos,
           usuario: values.usuario,
           id_rol: values.rol,
-          id_titulo_academico: values.titulo_academico
+          id_titulo_academico: values.titulo_academico??[]
         }),
 
       }
@@ -271,9 +269,10 @@ const Usuario = () => {
         .then((data) => {
           setLoading(true);
           if (data.ok) {
-            getUser()
+            openNotificationWithIcon("success","Operacion realizada con exito","El usuario " + (values.nombres +" "+values.apellidos).toUpperCase()+" se creo con exito")
           }
         }).finally(() => {
+          getUser()
           form.resetFields()
           cerrarModal();
           setLoadingButton(false);
@@ -304,13 +303,16 @@ const Usuario = () => {
         setLoading(true);
         if (data.ok) {
           openNotificationWithIcon("success","Operacion realizada con exito","usuario eliminado con exito")
-          getUser()
+        }else{
+          openNotificationWithIcon("danger","Ocurrio un error","El Usuario no se logro borro contactese con el administrador, Intelo mas luego")
         }
+        
+      }).finally(()=>{
+        getUser()
         form.resetFields();
         cerrarModal();
         setLoadingButton(false);
         setLoading(false);
-
       })
   }
 
@@ -419,8 +421,7 @@ const Usuario = () => {
                     label="Escoja su titulo academico"
                     rules={[
                       {
-                        required: true,
-                        message: 'Por favor, Escoja el rol',
+                        required: false,
                       },
                     ]}
                     wrapperCol={{ span: 24 }}
@@ -546,8 +547,7 @@ const Usuario = () => {
                     label="Escoja su titulo academico"
                     rules={[
                       {
-                        required: true,
-                        message: 'Por favor, Escoja el rol',
+                        required: false,
                       },
                     ]}
                     wrapperCol={{ span: 24 }}
@@ -647,12 +647,12 @@ const Usuario = () => {
                       return (
                         <Space direction="vertical" size="small">
                           {childrens.map((titulo, index) => (
-                            <Tag color="success" style={{ fontSize: "8px" }}>{titulo.label}</Tag>
+                            <Tag color="success" style={{ fontSize: "9px" }}>{titulo.label}</Tag>
                           ))}
                         </Space>
                       );
                     } else {
-                      return 'N/A';
+                      return <Tag color="red" style={{ fontSize: "9px" }}>No tiene titulo Academico</Tag>;
                     }
                   },
                 },
