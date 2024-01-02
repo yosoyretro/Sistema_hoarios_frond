@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, notification, Popconfirm, Col, Row, Modal, Form, Input, Space, Select, Table, Spin, Tag, Flex, Breadcrumb, Card } from "antd";
+import { Button, notification,Checkbox, Popconfirm, Col, Row, Modal, Form, Input, Space, Select, Table, Spin, Tag, Flex, Breadcrumb, Card } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { ClearOutlined, FilterOutlined, SearchOutlined, FrownOutlined, MehOutlined, FrownFilled, UserOutlined, UserAddOutlined, EditOutlined, ToolOutlined, DeleteOutlined, SyncOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { render } from "@testing-library/react";
@@ -7,6 +7,7 @@ import "../../public/css/letras.css";
 
 
 const Usuario = () => {
+  const [isChecked, setIsChecked] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpenEdit, setModalOpenEdit] = useState(false);
   const [form] = Form.useForm();
@@ -24,6 +25,7 @@ const Usuario = () => {
   const [filtroRol, setFiltroRol] = useState([]);
   const [api, contextHolder] = notification.useNotification();
   const url = process.env.REACT_APP_BACKEND_HORARIOS;
+  //const url = "http://127.0.0.1:8000/api/v1/horario/";
   const openNotificationWithIcon = (type,mensaje,descripcion) => {
     api[type]({
       message: mensaje,
@@ -31,6 +33,14 @@ const Usuario = () => {
     });
   };
   
+
+
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
+
+
+
   function ModalEditClose() {
     setDataUserEdit({});
     setModalOpenEdit(false);
@@ -270,6 +280,8 @@ const Usuario = () => {
           setLoading(true);
           if (data.ok) {
             openNotificationWithIcon("success","Operacion realizada con exito","El usuario " + (values.nombres +" "+values.apellidos).toUpperCase()+" se creo con exito")
+          }else if(data.ok == false){
+            openNotificationWithIcon("error","A ocurrido un error",data.msg_error)
           }
         }).finally(() => {
           getUser()
@@ -541,6 +553,11 @@ const Usuario = () => {
                 </Col>
               </Row>
               <Row>
+               <Col span={24}>
+                  <Checkbox checked={isChecked} onChange={handleCheckboxChange}>
+                    <span style={{ marginLeft: '8px' }}>No tiene titulo Academico</span>
+                  </Checkbox>
+                </Col>  
                 <Col span={24}>
                   <FormItem
                     name="titulo_academico"
@@ -552,7 +569,7 @@ const Usuario = () => {
                     ]}
                     wrapperCol={{ span: 24 }}
                   >
-                    <Select mode="multiple" style={{ width: "100%" }} options={tituloAcademico}></Select>
+                    <Select mode="multiple" style={{ width: "100%" }} options={tituloAcademico} disabled={isChecked}></Select>
                   </FormItem>
                 </Col>
               </Row>

@@ -1,11 +1,12 @@
 import React from "react";
-import { Layout, Menu, theme } from 'antd';
+import { Layout, Menu, theme,Avatar,Space } from 'antd';
 import { Link, Route, Routes } from 'react-router-dom';
 import { UserOutlined, ToolOutlined, SettingOutlined,CalendarOutlined,FolderViewOutlined } from '@ant-design/icons';
 import Usuario from './Mantenimientos/Usuario';
 import TitulosAcademicos from './Mantenimientos/TitulosAcademicos';
 import Materias from './Mantenimientos/Materias';
 import VisualizarHorarios from './externos/VisualizarHorarios';
+import PlanificacionHorario from './Configuraciones/PlanificacionHorario';
 
 const { Header, Content, Footer, Sider } = Layout;
 const items = [
@@ -23,7 +24,7 @@ const items = [
         label: 'Titulos Academicos',
         icon: <ToolOutlined />,
         destination: 'Mantenimientos/titulo_academico',
-        element:<TitulosAcademicos/>
+        element:<TitulosAcademicos/>,
       },
       {
         label: 'Roles',
@@ -42,13 +43,8 @@ const items = [
         icon: <ToolOutlined />,
         destination: '/cursos',
         
-      },
-      {
-        label: 'Paralelos',
-        icon: <ToolOutlined />,
-        destination: '/paralelos',
-        
-      },
+      }
+
     ],
   },
   {
@@ -60,8 +56,10 @@ const items = [
         icon: <SettingOutlined />,
       },
       {
-        label: 'Horarios',
+        label: 'Planificacion de horarios',
         icon: <SettingOutlined />,
+        destination: 'Configuraciones/Planificacion_horarios',
+        element:<PlanificacionHorario/>
       },
     ],
   },
@@ -123,7 +121,8 @@ const  Aside = () =>{
             padding: 0,
             background: colorBgContainer,
           }}
-        />
+        >
+        </Header>
         <Content
           style={{
             margin: '24px 16px 0',

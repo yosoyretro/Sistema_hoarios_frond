@@ -13,8 +13,9 @@ const TitulosAcademicos = () => {
   const formKeyRef = useRef(0);
   const [notificacion, setNotificacion] = useState(null);
   const [dataTituloEdit,setDataTituloEdit] = useState({});
+  const { Column, ColumnGroup } = Table;
   const url = process.env.REACT_APP_BACKEND_HORARIOS;
-
+  //const url = "http://127.0.0.1:8000/api/v1/horario/";
   function cerrarModalEdit(){
     setModalOpenTitulo(false);
   }
@@ -31,7 +32,7 @@ const TitulosAcademicos = () => {
     abrirModalEdit()
     console.log("Soy el childrens")
     console.log(childrens)
-    setDataTituloEdit({ id_titulo_academico:childrens.id_titulo_academico,codigo:childrens.codigo.props.children,descripcion:childrens.descripcion.props.children})
+    setDataTituloEdit({ id_titulo_academico:childrens.id_titulo_academico,codigo:childrens.codigo.props.children,descripcion:childrens.descripcion.props.children,nemonico:childrens.nemonico.props.children})
     formKeyRef.current += 1;
 
   };
@@ -42,31 +43,49 @@ const TitulosAcademicos = () => {
     fetch(`${url}show_data_titulo_academico/`).then((response) => { return response.json() })
       .then((data) => {
         if (data.ok) {
-          console.log(data)
           if (data.data) {
             let obj = data.data.map((value,numero)=>{
               return {
                 id_titulo_academico:value.id_titulo_academico,
                 numero:numero+1,
                 codigo:<label className="letra-pequeña1">{value.codigo}</label>,
+                nemonico:<label className="letra-pequeña1">{value.nemonico}</label>,
                 descripcion:<label className="letra-pequeña1">{value.descripcion}</label>,
-                fecha_creacion:<label className="letra-pequeña1">{new Date(value.fecha_creacion).toLocaleDateString('es-ES')}</label>,
-                fecha_actualizacion:<label className="letra-pequeña1">{new Date(value.fecha_actualizacion).toLocaleDateString('es-ES')}</label>
+                fecha_creacion:
+                <span className="letra-pequeña1">
+                  {new Date(value.fecha_creacion).toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  })}
+                </span>,
+                hora_creacion:
+                <span className="letra-pequeña1">
+                  {value.hora_creacion}
+                </span>,
+                fecha_actualizacion:<label className="letra-pequeña1">{value.fecha_actualizacion? new Date(value.fecha_actualizacion).toLocaleDateString('es-ES'): 'Este registro no tiene fecha de actualizacion'}</label>,
+                hora_actualizacion:
+                <span className="letra-pequeña1">
+                  {value.hora_actualizacion ?? "Este registro no tiene hora de actualizacion"}
+                </span>,
+                estado_registro: value.estado === 'A' ? 'Activo' : (value.estado === 'I' ? 'Inactivo' : (value.estado === 'E' ? 'Eliminado' : 'Otra condición')),
+
               }
             })
             setDataTitulosAcademicos(obj)
 
           }
-
         } else if (data.ok == false) {
-          console.log("El ok vino con error")
+          mostrarNotificacion("error","A ocurrido un error",data.msg_error);
         } else {
-          console.log("Error de comunicacion con el backend")
+          throw new Error("El error es interno en el servidor , porfavor contactese con el administrador.");
         }
 
       }).finally(()=>{
         setLoading(false);
-      }).catch((error) => { window.alert(error) })
+      }).catch((error) => { 
+          mostrarNotificacion('error','A ocurrido un error',error.message)
+       })
 
   }
 
@@ -83,12 +102,10 @@ const TitulosAcademicos = () => {
       if(request_backend.ok){
         mostrarNotificacion("success","Operacion Realizada con exito",request_backend.msg);
       }else if(request_backend.ok == false){
-        mostrarNotificacion("danger","Hubo un problema",request_backend.msg);
+        mostrarNotificacion("error","Hubo un problema",request_backend.msg);
       }else{
-        throw new Error("A ocurrido un error en la comunicacion del backend para crear el Titutlo Academico")
+        throw new Error("El error es interno en el servidor , porfavor contactese con el administrador.");
       }
-
-
     }).finally(
       ()=>{
         setModalOpen(false);
@@ -96,14 +113,13 @@ const TitulosAcademicos = () => {
         getTitulosAcademicos();
       }
     ).catch((error)=>{
-
+        mostrarNotificacion("error","A ocurrido un error",error);
     })
 
 
   }
 
   const deleteTitulo = (values)=>{
-    console.log(values);
     let request_backend = {
       method:"POST",
       headers: {
@@ -124,8 +140,6 @@ const TitulosAcademicos = () => {
       getTitulosAcademicos();
     })
 
-    
-
   }
   useEffect(()=>{
     getTitulosAcademicos();
@@ -141,11 +155,12 @@ const TitulosAcademicos = () => {
       method:"POST",
       headers: {
         'Content-Type': 'application/json'
-      },
+      },      
       body:JSON.stringify({
               id_titulo_academico:dataTituloEdit.id_titulo_academico,
               codigo:values.codigo,
               descripcion:values.descripcion,
+              nemonico:values.nemonico
             })
     }
     fetch(`${url}update_titulo_academico/`,request_backend).then((data_request)=>{return data_request.json()})
@@ -153,7 +168,7 @@ const TitulosAcademicos = () => {
       if(data.ok){
         mostrarNotificacion("success","Operacion Realizada con exito",data.msg);
       }else if(data.ok == false){
-        mostrarNotificacion("danger","A ocurrido un error interno",data.msg);
+        mostrarNotificacion("danger","A ocurrido un error interno",data.msg_error);
       }
     }).finally(()=>{
       cerrarModalEdit()
@@ -176,11 +191,20 @@ const TitulosAcademicos = () => {
                   <Input style={{ width: 450 }}/>
                 </Form.Item>
               </Row>
+              
               <Row>
-                <Form.Item name="descripcion" rules={[{required:true,message:"La descripcion es requerido"}]} label="La descripcion es requerida" >
+                <Form.Item name="descripcion" rules={[{required:true,message:"La descripcion es requerido"}]} label="Ingrese la descripcion" >
                   <Input style={{ width: 450 }}/>
                 </Form.Item>
               </Row>
+
+              <Row>
+                <Form.Item name="nemonico" rules={[{required:true,message:"El nemonico es requerido"}]} label="Ingrese el nemonico del titulo Academico" >
+                  <Input style={{ width: 450 }}/>
+                </Form.Item>
+              </Row>
+
+
               <Row>
                 <Button htmlType="submit" style={{width:"100%"}} type="primary" icon={<SaveOutlined />}>Crear Titulo Academico</Button>
               </Row>
@@ -201,6 +225,11 @@ const TitulosAcademicos = () => {
               </Row>
               <Row>
                 <Form.Item name="descripcion" rules={[{required:true,message:"La descripcion es requerido"}]} label="Edite la descripcion" >
+                  <Input style={{ width: 450 }}/>
+                </Form.Item>
+              </Row>
+              <Row>
+                <Form.Item name="nemonico" rules={[{required:true,message:"El nemonico es requerido"}]} label="Edite el nemonico del titulo Academico" >
                   <Input style={{ width: 450 }}/>
                 </Form.Item>
               </Row>
@@ -237,47 +266,54 @@ const TitulosAcademicos = () => {
         </Row>
 
         <Row style={{ width: '100%' }}>
-          <Table scroll={{ x: 1500 }} columns={
-            [
-              { title: "Nº", dataIndex: "numero",width:75, align: "center" },
-              { title: "Codigo", dataIndex: "codigo",width:100, align: "center" },
-              { title: "Descripcion", dataIndex: "descripcion",width:200, align: "left" },
-              { title: "Fecha de creacion", dataIndex: "fecha_creacion",width:100, align: "center" },
-              { title: "Fecha_actualizacion", dataIndex: "fecha_actualizacion",width:100, align: "center" },
-              {
-                title: "Aciones", fixed: 'right', width: 75, dataIndex: 'aciones', align: "center", render: (childrens, record) => {
-                  return (
-                    <Space size="small">
-                      <Col>
-                        <Button typeof="primary" primary icon={<EditOutlined/>} onClick={() => handleEditarClick(record)} />
-                      </Col>
-                      <Col>
-                        <Popconfirm
-                          okText="Si , realizar"
-                          title="Confirmar accion"
-                          description="¿Deseas realizar la eliminacion de este registro, al borrar este registro todos los usuarios que tenga el titulo academico de este registro quedaran afectado?"
-                          onConfirm={() => { deleteTitulo(record) }}
-                          icon={
-                            <QuestionCircleOutlined
-                              style={{
-                                color: 'red',
-                              }}
-                            />
-                          }
-                        >
-                          <Button typeof="primary" danger icon={<DeleteOutlined />} />
-                        </Popconfirm>
-                      </Col>
+             <Table
+          scroll={{ x: 1745 }}
+          bordered={false}
+          dataSource={dataTitlosAcademicos}
+        >
+          <ColumnGroup title="Registro" >
+            <Column title="Nº" dataIndex="numero" width={75} align="center" />
+            <Column title="Codigo" dataIndex="codigo" width={100} align="center" />
+            <Column title="nemonico" dataIndex="nemonico" width={100} align="center" />
+            <Column title="Descripcion" dataIndex="descripcion" width={100} align="center" />
+          </ColumnGroup>
+          <ColumnGroup title="Campos de auditoria" bordered={true}>
+            <Column title="Fecha de creacion" dataIndex="fecha_creacion" width={90} align="center" />
+            <Column title="Hora de creacion" dataIndex="hora_creacion" width={75} align="center" />
+            <Column title="Fecha de actualizacion" dataIndex="fecha_actualizacion" width={90} align="center" />
+            <Column title="Hora de actualizacion" dataIndex="hora_actualizacion" width={75} align="center" />
+            <Column title="Estado registro" dataIndex="estado_registro" width={100} align="center" />
+          </ColumnGroup>
 
-                    </Space>
-                  )
-                }
-              }]
-          }
-            dataSource={dataTitlosAcademicos}
-          >
+          
 
-          </Table>
+          <Column
+            title="Acciones"
+            fixed="right"
+            width={75}
+            dataIndex="acciones"
+            align="center"
+            render={(childrens, record) => (
+              <Space size="small">
+                <Col>
+                  <Button type="primary" icon={<EditOutlined />} onClick={() => handleEditarClick(record)} />
+                </Col>
+                <Col>
+                  <Popconfirm
+                    okText="Si, realizar"
+                    title="Confirmar accion"
+                    description="¿Deseas realizar la eliminacion de este registro? Al borrar este registro, todos los usuarios que tengan el título académico de este registro quedarán afectados."
+                    onConfirm={() => { deleteTitulo(record) }}
+                    icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                  >
+                    <Button type="primary" danger icon={<DeleteOutlined />} />
+                  </Popconfirm>
+                </Col>
+              </Space>
+            )}
+          />
+    </Table>
+
         </Row>
       </Space>
       </Spin>
