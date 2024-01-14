@@ -7,6 +7,7 @@ import TitulosAcademicos from './Mantenimientos/TitulosAcademicos';
 import Materias from './Mantenimientos/Materias';
 import VisualizarHorarios from './externos/VisualizarHorarios';
 import PlanificacionHorario from './Configuraciones/PlanificacionHorario';
+import Cursos from './Mantenimientos/Cursos';
 
 const { Header, Content, Footer, Sider } = Layout;
 const items = [

@@ -1,8 +1,8 @@
 import React,{useState, useEffect, useRef} from "react";
 import { Button, Col, Row,Form, Flex, Breadcrumb, Table, Popconfirm,Spin,Space,Modal,Input,notification } from "antd";
-
 import { ToolOutlined, QuestionCircleOutlined, DeleteOutlined, EditOutlined, SyncOutlined,SaveOutlined,FileAddOutlined } from '@ant-design/icons';
-import { error } from "console";
+import "../../public/css/letras.css";
+
 
 const Nivel = () => {
     const [loading,setLoading]= useState(true);
@@ -56,7 +56,7 @@ const Nivel = () => {
                                     month: '2-digit',
                                     year: 'numeric',
                                 })} </span>,
-                                hora_creacion:<span className="letra-pequeña1">{value-hora_creacion}</span>,
+                                hora_creacion:<span className="letra-pequeña1">{value.hora_creacion}</span>,
                                 fecha_actualizacion:<label className="letra-pequeña1">{value.fecha_actualizacion? new Date(value.fecha_actualizacion).toLocaleDateString('es-Es'):'Este registro no tiene fecha de actualización'}</label>,
                                 hora_actualizacion:<span className="letra-pequeña1">{value.hora_actualizacion ?? "Este registro no tiene hora de actualización"}</span>,
                                 estado_registro: value.estado ==='A' ? 'Activo' : (value.estado === 'I' ? 'Inactivo' : (value.estado === 'E' ? 'Eliminado' : 'Otra condición')),
@@ -189,7 +189,7 @@ const Nivel = () => {
                     </Row>
 
                     <Row>
-                        <Button htmlType="submit" style={{width:"100%"}} type="primary" icon={<SaveOutlined7/>}>Crear Nivel</Button>
+                        <Button htmlType="submit" style={{width:"100%"}} type="primary" icon={<SaveOutlined />}>Crear Nivel</Button>
                     </Row>
                 </Form>
             </Row>
