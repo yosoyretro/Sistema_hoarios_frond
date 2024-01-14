@@ -42,7 +42,7 @@ const items = [
         label: 'Cursos',
         icon: <ToolOutlined />,
         destination: 'Mantenimientos/cursos',
-        
+        element:<Cursos/>
       }
 
     ],
