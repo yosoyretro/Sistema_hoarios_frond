@@ -20,7 +20,7 @@ const Nivel = () => {
         setModalOpenNivel(false);
     }
     function abrirModalEdit(){
-        setDataNivel(true);
+        setModalOpenNivel(true);
     }
     const mostrarNotificacion = (tipo, titulo, mensaje) => {
         notification[tipo]({
@@ -40,7 +40,7 @@ const Nivel = () => {
     const getNivel = () => {
         setLoading(true);
         fetch(`${url}show_data_nivel/`).then((response) => {
-            return response.jason() })
+            return response.json() })
             .then((data) => {
                 if (data.ok) {
                     if(data.data) {
