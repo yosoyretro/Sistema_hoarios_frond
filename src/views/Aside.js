@@ -8,6 +8,7 @@ import Materias from './Mantenimientos/Materias';
 import VisualizarHorarios from './externos/VisualizarHorarios';
 import PlanificacionHorario from './Configuraciones/PlanificacionHorario';
 import Cursos from './Mantenimientos/Cursos';
+import Paralelo from "./Mantenimientos/Paralelo";
 
 const { Header, Content, Footer, Sider } = Layout;
 const items = [
@@ -43,6 +44,12 @@ const items = [
         label: 'Cursos',
         icon: <ToolOutlined />,
         destination: 'Mantenimientos/cursos',
+        element:<Cursos/>
+      },
+      {
+        label: 'Paralelos',
+        icon: <ToolOutlined />,
+        destination: 'Mantenimientos/paralelo',
         element:<Cursos/>
       }
 

@@ -68,7 +68,7 @@ const Nivel = () => {
                 } else if (data.ok ==false) {
                     mostrarNotificacion("error", "A ocurrido un error", data.msg_error);
                 } else {
-                    throw new Error("El error es interno en el servidor, por faovr contactese con el administrador.");
+                    throw new Error("El error es interno en el servidor, por favor contactese con el administrador.");
                 }
 
             }).finally(()=>{
