@@ -4,6 +4,7 @@ import { ToolOutlined, QuestionCircleOutlined, DeleteOutlined, EditOutlined, Syn
 import "../../public/css/letras.css";
 
 
+
 const Paralelo = () => {
     const [loading, setLoading] = useState(true);
     const [dataParalelo, setDataParalelo] = useState ([]);
@@ -24,7 +25,7 @@ const Paralelo = () => {
         setModalOpenParalelo(true);
     }
     
-    const mostrarNotificacion = (tipo, titulo, mensaje) => {
+    const mostrarNotificacion = (tipo,titulo,mensaje) => {
         notification[tipo]({
             message:titulo,
             description:mensaje,
@@ -58,15 +59,13 @@ const Paralelo = () => {
                                 hora_creacion:<span className="letra-pequeña1">{value.hora_creacion}</span>,
                                 fecha_actualizacion:<label className="letra-pequeña1">{value.fecha_actualizacion? new Date(value.fecha_actualizacion).toLocaleDateString('es-Es'): 'Este registro no tiene fecha de actualización'}</label>,
                                 hora_actualizacion:<span className="letra-pequeña1">{value.hora_actualizacion ?? "Este registro no tiene hora de actualización"}</span>,
-                                estado_registro: value.estado ==='A' ? 'Activo':
-                                (value. estado === 'I' ? 'Inactivo':
-                                (value.estado === 'E' ? 'Eliminado' : 'Otra condición')),
+                                estado_registro: value.estado ==='A' ? 'Activo':(value.estado === 'I' ? 'Inactivo':(value.estado === 'E' ? 'Eliminado' : 'Otra condición')),
                             }
                         })
                         setDataParalelo(obj)
 
                     }
-                } else if (data.ok ==false) {
+                } else if (data.ok == false) {
                     mostrarNotificacion("error", "A ocurrido un error", data.msg_error);
                 } else {
                     throw new Error("El error es interno en el servidor, por favor contactese con el administrador");
@@ -116,7 +115,7 @@ const Paralelo = () => {
         }
         fetch(`${url}delete_paralelo/`, request_backend).then((data_request)=>{return data_request.json()}).then((data)=>{
             if (data.ok) {
-                mostrarNotificacion("success", "Operación realizada con éxito", "El titulo" + values.description.props.nivel + "se eliminó con éxito");
+                mostrarNotificacion("success", "Operación realizada con éxito", "El titulo" + values.description.props.paralelo + "se eliminó con éxito");
             } else if(data.ok == false){
                 mostrarNotificacion("error", "A ocurrido un error interno", data.msg);
             }
@@ -182,9 +181,9 @@ const Paralelo = () => {
             </Row>
 
             <Row>
-                <Form initialValues={dataParaleloEdit} onFinish={editParalelo} layout="vertical" autoComplete="on" aling="left">
+                <Form initialValues={dataParaleloEdit} onFinish={editParalelo} layout="vertical" autoComplete="on" align="left">
                     <Row>
-                        <Form.Item name="numero" rules={[{required:true,message: "El paralelo es reguerido"}]} label="Edite el paralelo">
+                        <Form.Item name="numero" rules={[{required:true,message: "El paralelo es requerido"}]} label="Edite el paralelo">
                             <Input style={{ width:450}}></Input>
                         </Form.Item>
                     </Row>
@@ -210,6 +209,9 @@ const Paralelo = () => {
                 <Space size="small" style={{ margin:"4px"}}>
                     <Col>
                         <Button style={{ color: "green", border: "1px solid green"}} icon={<EditOutlined/>} onClick={()=>{setModalOpen(true)}}>Crear Paralelo</Button>
+                    </Col>
+                    <Col>
+                        <Button style={{ color: "green", border: "1px solid green" }} onClick={()=>{getParalelo()}} icon={<SyncOutlined />}>Sincronizar datos</Button>
                     </Col>
                 </Space>
             </Row>
