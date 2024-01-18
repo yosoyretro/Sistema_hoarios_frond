@@ -50,7 +50,7 @@ const items = [
         label: 'Paralelos',
         icon: <ToolOutlined />,
         destination: 'Mantenimientos/paralelo',
-        element:<Cursos/>
+        element:<Paralelo/>
       }
 
     ],

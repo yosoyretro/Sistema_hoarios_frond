@@ -157,14 +157,14 @@ const Paralelo = () => {
 
     return(
         <>
-        <Spin spinning={loading} tip="Cargando...">{/*MODAL DE CREAR NIVEL*/}<Modal title="Crear Paralelo" footer={null} open={modalOpen} onCancel={()=>{setModalOpen(false)}} onClose={()=>{setModalOpen(false)}} okText="Crear Paralelo">
+        <Spin spinning={loading} tip="Cargando...">{/*MODAL DE CREAR PARALELO*/}<Modal title="Crear Paralelo" footer={null} open={modalOpen} onCancel={()=>{setModalOpen(false)}} onClose={()=>{setModalOpen(false)}} okText="Crear Paralelo">
             <Row align="left" style={{marginLeft:"10px"}}>
                 <h2><FileAddOutlined/>Crear Paralelo</h2>
             </Row>
             <Row>
                 <Form form={form} onFinish={onFinish} layout="vertical" autoComplete="on" align="left">
                     <Row>
-                        <Form.Item name="numero_paralelo" rules={[{required:true, message:"El paralelo es requerido"}]} label="ingrese el numero del Nivel">
+                        <Form.Item name="numero_paralelo" rules={[{required:true, message:"El paralelo es requerido"}]} label="ingrese el numero del Paralelo">
                             <Input style={{ width:450}}/>
                         </Form.Item>
                     </Row>
@@ -234,7 +234,7 @@ const Paralelo = () => {
                     <Column title = "Acciones" fixed="right" width={75} dataIndex="acciones" align="center" render={(Paralelo, record) => (
                         <Space size="small">
                             <Col>
-                                <Button type="primary" icon={<EditOutlined7/>} onClick={() => handleEditarClick(record)}/>
+                                <Button type="primary" icon={<EditOutlined/>} onClick={() => handleEditarClick(record)}/>
                             </Col>
                             <Col>
                                 <Popconfirm okText="Si, realizar" title="Confirmar acción" description="¿Deseas realizar la eliminación de este registro? Al borrar este registro todos los usuarios que tengan el Parralelo de este registro quedarán afectados." onConfirm={() => {deleteParalelo(record)}} icon={<QuestionCircleOutlined style={{ color: 'red'}}/>}>
