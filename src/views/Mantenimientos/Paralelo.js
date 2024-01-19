@@ -233,7 +233,7 @@ const Paralelo = () => {
                     </ColumnGroup>
 
 
-                    <Column title = "Acciones" fixed="right" width={75} dataIndex="acciones" align="center" render={(Paralelo, record) => (
+                    <Column title = "Acciones" fixed="right" width={75} dataIndex="acciones" align="center" render={(paralelo, record) => (
                         <Space size="small">
                             <Col>
                                 <Button type="primary" icon={<EditOutlined/>} onClick={() => handleEditarClick(record)}/>
