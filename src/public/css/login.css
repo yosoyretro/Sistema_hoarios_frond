@@ -1,0 +1,31 @@
+.body{
+    background: #2432f0fa;
+    height: 100vh;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-login{
+    padding: 125px 400px;
+}
+
+.card{
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    padding-top: 20px;
+    width: 650px;
+    height: 325px;
+}
+img{
+    padding-left: 25px;
+}
+.form-input{
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
