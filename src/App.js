@@ -12,7 +12,7 @@ import Horarios from "./views/Mantenimientos/Horarios";
 import NewHorario from "./components/NewHorario"
 import Paralelos from "./views/Mantenimientos/Paralelo"
 function App() {
-  const [isLogin, setIsLogin] = useState(localStorage.getItem("autenticacion") ?? false);
+  const [isLogin, setIsLogin] = useState(localStorage.getItem("autenticacion") ?? true);
 
   return (
     <Router>
