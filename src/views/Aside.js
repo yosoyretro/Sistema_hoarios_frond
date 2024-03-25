@@ -11,7 +11,7 @@ const items = [
     children: [
       {
         label: 'Usuarios',
-        icon: <ToolOutlined />,
+        icon: <UserOutlined />,
         destination: '/Mantenimientos/Usuarios',
       },
       {
@@ -27,14 +27,8 @@ const items = [
       },
       {
         label: 'Materias',
-        icon: <ToolOutlined />,
+        icon: <FolderViewOutlined />,
         destination: '/Mantenimientos/materias',
-      },
-      {
-        label: 'Cursos',
-        icon: <ToolOutlined />,
-        destination: '/Mantenimientos/cursos',
-
       },
       {
         label: 'paralelos',
@@ -44,10 +38,9 @@ const items = [
       },
       {
         label: "Horarios",
-        icon: <ToolOutlined />,
+        icon: <CalendarOutlined />,
         destination: 'Mantenimientos/Horarios',
       }
-
     ],
   },
   {
