@@ -61,6 +61,18 @@ const Aside = ({ children }) => {
                   <MenuItem disabled icon={<BankOutlined />} style={{ background: '#000000', color: 'white' }}>{"Educacion Global"}</MenuItem>
                 </Link>
 
+                <Link to={"Mantenimientos/materias"}>
+                  <MenuItem disabled icon={<BankOutlined />} style={{ background: '#000000', color: 'white' }}>{"Materias"}</MenuItem>
+                </Link>
+
+                <Link to={"Mantenimientos/tituloacademico"}>
+                  <MenuItem disabled icon={<BankOutlined />} style={{ background: '#000000', color: 'white' }}>{"Titutlos Academicos"}</MenuItem>
+                </Link>
+
+                <Link to={"Mantenimientos/horarios"}>
+                  <MenuItem disabled icon={<BankOutlined />} style={{ background: '#000000', color: 'white' }}>{"Horarios"}</MenuItem>
+                </Link>
+
               </SubMenu>
         </Menu>
       </Sidebar>
