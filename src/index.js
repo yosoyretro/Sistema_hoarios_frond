@@ -4,11 +4,8 @@ import './index.css';
 import './styles/estilos1.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-<<<<<<< Updated upstream
-=======
 import themes from "./styles/theme.json";
 import { ConfigProvider } from 'antd';
->>>>>>> Stashed changes
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
