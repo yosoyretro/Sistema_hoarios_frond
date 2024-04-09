@@ -1,0 +1,30 @@
+.btn-dark{
+  background:black;
+  color:white;
+  transition: 1s;
+}
+
+.btn-dark:hover{
+  background:black;
+  color:white;
+}
+
+
+.text-sucess{
+  color:green;
+}
+
+img{
+  height: 150px;
+  width:150px;
+}
+
+
+.alinear-Formulario{;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  border: 1px solid #c3c1c1;
+  padding: 15px;
+  border-radius: 2px;
+}

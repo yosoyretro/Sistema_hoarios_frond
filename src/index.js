@@ -1,12 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './styles/estilos1.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import themes from "./styles/theme.json";
+import { ConfigProvider } from 'antd';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+        <ConfigProvider theme={themes}>
+          <App />
+        </ConfigProvider>
   </React.StrictMode>
 );
 

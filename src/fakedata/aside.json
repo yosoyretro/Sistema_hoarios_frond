@@ -1,0 +1,9 @@
+[
+    {
+        "titulo_menu": "Mantenimientos",
+        "icono_menu": "SettingOutlined",
+        "titulo_submenu": "usuarios",
+        "url": "/Mantenimientos/usuarios",
+        "icono": ""
+    }
+]
