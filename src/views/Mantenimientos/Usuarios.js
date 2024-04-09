@@ -49,11 +49,11 @@ const Usuarios = () => {
                         nombres: value.nombres,
                         apellidos: value.apellidos,
                         perfil: value.descripcion,
-                        estado: "Activo",
-                        maquina_creacion:"192.168.14.13",
-                        maquina_actualiso:"192.168.14.13",
-                        usuario_creacion:'cjmoreno',
-                        usuario_actualiso:'cjmoreno',
+                        estado: value.estado,
+                        maquina_creacion:value.ip_creacion,
+                        maquina_actualiso:value.ip_actualizacion,
+                        //usuario_creacion:'cjmoreno',
+                        //usuario_actualiso:'cjmoreno',
                 }
             })
             
