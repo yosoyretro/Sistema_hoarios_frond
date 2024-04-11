@@ -24,7 +24,7 @@ const Calendario = (props) => {
   const url = "http://localhost:8000/api/istg/";
 
 
-  function getParalelos() {
+  /*function getParalelos() {
     let configuraciones = {
       method: "GET",
       headers: {
@@ -131,7 +131,7 @@ const Calendario = (props) => {
     getParalelos()
     getUser()
     getCurso()
-  }, [])
+  }, [])*/
 
   return (
     <div className="myCustomHeight">
@@ -142,101 +142,6 @@ const Calendario = (props) => {
         }}>
           <Title level={3}>Mantenimiento de Horarios</Title>
         </Row>
-        <Card bordered={false}>
-
-          <Space style={{ margin: "5px" }}>
-            <Row gutter={{ xs: 8, sm: 24, md: 150, lg: 24 }}>
-              <Col>
-                <Button icon={<PlusCircleOutlined />} onClick={() => { setIsOpenNewModal(true) }}>Crear un horario</Button>
-              </Col>
-              <Col>
-                <Button icon={<SyncOutlined />} onClick={() => {
-                  getParalelos()
-                }}>Descargar datos de paralelo</Button>
-              </Col>
-              <Col>
-                <Button icon={<SyncOutlined />} onClick={() => {
-                  getUser()
-                }}>Descargar datos de usuario</Button>
-              </Col>
-              <Col>
-              <Button icon={<SyncOutlined/>} onClick={()=>{
-                getCurso()
-              }}>Descargar datos de curso</Button>
-            </Col>
-              <Col>
-                <Button icon={<ClearOutlined />}>Limpiar</Button>
-              </Col>
-
-              <Col>
-                <Button icon={<SearchOutlined />}>Buscar</Button>
-              </Col>
-            </Row>
-          </Space>
-          <Row>
-            <Title level={5}>Cantidad : {dataTabla.length}</Title>
-          </Row>
-
-          <Table
-            size="small"
-            scroll={{ x: 100 }}
-            columns={[
-              {
-                dataIndex: 'numero',
-                title: 'numero',
-                width: 2,
-                align: 'center'
-              },
-              {
-                dataIndex: 'paralelo',
-                title: 'paralelo',
-                width: 10
-              },
-              {
-                dataIndex: 'ip_actualizacion',
-                title: 'maquina ultima gestion',
-                width: 10,
-                align: 'center'
-              },
-
-              {
-                dataIndex: 'usuarios_ultima_gestion',
-                title: 'Usuario ultima gestion',
-                width: 10,
-                align: 'center'
-              },
-              {
-                dataIndex: 'fecha_actualizacion',
-                title: 'fecha ultima gestion',
-                width: 10,
-                align: 'center'
-
-              },
-              {
-                dataIndex: 'estado',
-                title: 'Estado',
-                width: 10,
-                align: 'center'
-
-              },
-              {
-                dataIndex: "accion",
-                title: "Acciones",
-                align: 'center',
-                width: 10,
-                render: (_, record) => (
-                  <Dropdown overlay={menu(record)} trigger={['click']}>
-                    <Button><MenuOutlined /></Button>
-                  </Dropdown>
-                ),
-              }
-            ]}
-            dataSource={dataTabla}
-          />
-        </Card>
-        <NewHorario open={OpenNewModal} handleCloseModal={handleCloseModal} />
-        <VerifyHorario open={isOpeVerifyHorario} handleCloseModal={handleCloseModal} formulario={formularioEditar} />
-
         <Calendar
           localizer={localizer}
           startAccessor="start"

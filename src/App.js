@@ -21,9 +21,9 @@ function App() {
           <Route path="/Mantenimientos/cursos" element={<Cursos />}/>
           <Route path="/Mantenimientos/paralelos" element={<Paralelos />}/>
           <Route path="/Mantenimientos/educacionGobal" element={<EducacionGlobal />}/>
-          <Route path="/Mantenimientos/materias" element={Materias}/>
-          <Route path="/Mantenimientos/tituloacademico" element={TitulosAcademicos}/>
-          <Route path="/Mantenimientos/horarios" element={Horarios}/>
+          <Route path="/Mantenimientos/materias" element={<Materias/>}/>
+          <Route path="/Mantenimientos/tituloacademico" element={<TitulosAcademicos/>}/>
+          <Route path="/Mantenimientos/horarios" element={<Horarios/>}/>
           <Route path="/Formulario/crearEducacionGobal" element={<NewEducacionGlobal/>}/>
         </Routes>
       </Aside>
