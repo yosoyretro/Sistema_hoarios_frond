@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, notification,Checkbox, Popconfirm, Col, Row, Modal, Form, Input, Space, Select, Table, Spin, Tag, Flex, Breadcrumb, Card } from "antd";
+import { Button, notification, Checkbox, Popconfirm, Col, Row, Modal, Form, Input, Space, Select, Table, Spin, Tag, Flex, Breadcrumb, Card } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import { ClearOutlined, FilterOutlined, SearchOutlined, FrownOutlined, MehOutlined, FrownFilled, UserOutlined, UserAddOutlined, EditOutlined, ToolOutlined, DeleteOutlined, SyncOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { render } from "@testing-library/react";
+import { ClearOutlined, FilterOutlined, SearchOutlined, UserAddOutlined, EditOutlined, ToolOutlined, DeleteOutlined, SyncOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+//import { render } from "@testing-library/react";
 import "../../public/css/letras.css";
 
 
@@ -26,13 +26,13 @@ const Usuario = () => {
   const [api, contextHolder] = notification.useNotification();
   const url = process.env.REACT_APP_BACKEND_HORARIOS;
   //const url = "http://127.0.0.1:8000/api/v1/horario/";
-  const openNotificationWithIcon = (type,mensaje,descripcion) => {
+  const openNotificationWithIcon = (type, mensaje, descripcion) => {
     api[type]({
       message: mensaje,
-      description:descripcion,
+      description: descripcion,
     });
   };
-  
+
 
 
   const handleCheckboxChange = (e) => {
@@ -68,15 +68,15 @@ const Usuario = () => {
     console.log(values)
     let filter;
 
-    if (values.rol != undefined && values.usuario != undefined) {
+    if (values.rol !== undefined && values.usuario !== undefined) {
       console.log("Estoy entrando en el primer if ")
       filter = userDataRespaldo.filter((data) => (data.rol.props.children === values.rol && data.usuario.props.children === values.usuario))
       setUserData(filter)
-    } else if (values.rol != undefined) {
+    } else if (values.rol !== undefined) {
       console.log("ENTRO EN EL SEGUNDO IF")
       filter = userDataRespaldo.filter((data) => (data.rol.props.children === values.rol))
       setUserData(filter)
-    } else if (values.usuario != undefined) {
+    } else if (values.usuario !== undefined) {
       console.log("ENTRO EN EL TERCER IF")
       filter = userDataRespaldo.filter((data) => (data.usuario.props.children === values.usuario))
       setUserData(filter)
@@ -140,10 +140,10 @@ const Usuario = () => {
     fetch(`${url}edit_usuario/`, opcion).then((response) => { return response.json() })
       .then((data) => {
         if (data.ok) {
-          openNotificationWithIcon("success","Operacion realizada con exito","Usuario editado con exito")
-        } else if(data.ok == false) {
-          openNotificationWithIcon("danger","A ocurrido un error","Hubo un problema al editar el usuario")
-        }else{
+          openNotificationWithIcon("success", "Operacion realizada con exito", "Usuario editado con exito")
+        } else if (data.ok === false) {
+          openNotificationWithIcon("danger", "A ocurrido un error", "Hubo un problema al editar el usuario")
+        } else {
           throw new Error("A ocurrido un error interno , contactese con el administrador");
         }
 
@@ -155,8 +155,8 @@ const Usuario = () => {
         setLoadingButton(false);
         setLoading(false);
         getUser();
-      }).catch((error)=>{
-        openNotificationWithIcon("danger","A ocurrido un error",error)
+      }).catch((error) => {
+        openNotificationWithIcon("danger", "A ocurrido un error", error)
       })
 
   }
@@ -225,7 +225,7 @@ const Usuario = () => {
               setRol(roles);
             }
           }
-        }).catch((error)=>{window.alert("A ocurrido un error en la comunicacion del backend para obtener los roles");});
+        }).catch((error) => { window.alert("A ocurrido un error en la comunicacion del backend para obtener los roles"); });
     } catch (error) {
       //window.alert("A ocurrido un error en la comunicacion para obtener los roles")
     }
@@ -250,7 +250,7 @@ const Usuario = () => {
 
       }).finally(() => {
 
-      }).catch((error)=>{window.alert("A ocurrido un error en la comunicacion del backend para obtener los titulos academicos");});
+      }).catch((error) => { window.alert("A ocurrido un error en la comunicacion del backend para obtener los titulos academicos"); });
     } catch (Error) {
       //window.alert("Error en la comunicacion del backend para obtener los titulos academicos");
     }
@@ -271,7 +271,7 @@ const Usuario = () => {
           nombres: values.nombres + " " + values.apellidos,
           usuario: values.usuario,
           id_rol: values.rol,
-          id_titulo_academico: values.titulo_academico??[]
+          id_titulo_academico: values.titulo_academico ?? []
         }),
 
       }
@@ -279,9 +279,9 @@ const Usuario = () => {
         .then((data) => {
           setLoading(true);
           if (data.ok) {
-            openNotificationWithIcon("success","Operacion realizada con exito","El usuario " + (values.nombres +" "+values.apellidos).toUpperCase()+" se creo con exito")
-          }else if(data.ok == false){
-            openNotificationWithIcon("error","A ocurrido un error",data.msg_error)
+            openNotificationWithIcon("success", "Operacion realizada con exito", "El usuario " + (values.nombres + " " + values.apellidos).toUpperCase() + " se creo con exito")
+          } else if (data.ok === false) {
+            openNotificationWithIcon("error", "A ocurrido un error", data.msg_error)
           }
         }).finally(() => {
           getUser()
@@ -314,12 +314,12 @@ const Usuario = () => {
       .then((data) => {
         setLoading(true);
         if (data.ok) {
-          openNotificationWithIcon("success","Operacion realizada con exito","usuario eliminado con exito")
-        }else{
-          openNotificationWithIcon("danger","Ocurrio un error","El Usuario no se logro borro contactese con el administrador, Intelo mas luego")
+          openNotificationWithIcon("success", "Operacion realizada con exito", "usuario eliminado con exito")
+        } else {
+          openNotificationWithIcon("danger", "Ocurrio un error", "El Usuario no se logro borro contactese con el administrador, Intelo mas luego")
         }
-        
-      }).finally(()=>{
+
+      }).finally(() => {
         getUser()
         form.resetFields();
         cerrarModal();
@@ -553,11 +553,11 @@ const Usuario = () => {
                 </Col>
               </Row>
               <Row>
-               <Col span={24}>
+                <Col span={24}>
                   <Checkbox checked={isChecked} onChange={handleCheckboxChange}>
                     <span style={{ marginLeft: '8px' }}>No tiene titulo Academico</span>
                   </Checkbox>
-                </Col>  
+                </Col>
                 <Col span={24}>
                   <FormItem
                     name="titulo_academico"
@@ -682,7 +682,7 @@ const Usuario = () => {
                     return (
                       <Space size="small">
                         <Col>
-                          <Button typeof="primary" primary onClick={() => handleEditarClick(record)} primary icon={<EditOutlined />} />
+                          <Button typeof="primary" primary onClick={() => handleEditarClick(record)} icon={<EditOutlined />} />
                         </Col>
                         <Col>
                           <Popconfirm

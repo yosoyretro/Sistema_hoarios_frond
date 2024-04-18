@@ -10,6 +10,7 @@ const NewUsuario = (props) =>{
     setIsOpen(props.isOpen);
     getRol();
   }, [props.isOpen]);
+  
   function getRol(){
     fetch(`${url}show_roles`, { method: 'GET' })
           .then((response) => {

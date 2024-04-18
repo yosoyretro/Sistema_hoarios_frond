@@ -1,15 +1,17 @@
 import React, { useState,useEffect } from 'react';
-import { Card, Button, Form, TimePicker, Select, Collapse, Badge,notification } from 'antd';
+import { Card, Button, Form, TimePicker, Select, Collapse,notification } from 'antd';
 import { CaretRightOutlined, PlusOutlined, CheckCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Panel } = Collapse;
 const { Item } = Form;
-const { Option } = Select;
+//const { Option } = Select;
 
 const DiasMaterias = ({ dia, onSave }) => {
   const [forms, setForms] = useState([]);
   const [data, setData] = useState([]);
   const [approvedForms, setApprovedForms] = useState([]);
   const [dataAsignatura,setDataAsignatura] = useState([]);
+  const [paraleloData, setParalelo] = useState("");
+  const [cursoData,setCursoData] = useState([]);
   const [loading,setLoading]= useState(true);
   const url = "http://127.0.0.1:8000/api/v1/horario/";
 
@@ -22,7 +24,9 @@ const DiasMaterias = ({ dia, onSave }) => {
   useEffect(
     ()=>{
       getAsignatura()
-    },[]);
+      getCurso()
+      getParalelos()
+    },);
 
   const getAsignatura = ()=>{
     setLoading(true);
@@ -44,7 +48,7 @@ const DiasMaterias = ({ dia, onSave }) => {
         }else{
           setDataAsignatura([]);
         }
-      }else if(data_request.ok == false){
+      }else if(data_request.ok === false){
         mostrarNotificacion('error','A ocurrido un error','A ocurrido un error al obtener la informacion');
       }
     }).finally(()=>{
@@ -52,6 +56,60 @@ const DiasMaterias = ({ dia, onSave }) => {
     }).catch(()=>{
       mostrarNotificacion('error','A ocurrido un error','Error interno en el servidor');
     })
+  }
+
+  function getCurso(){
+    fetch(`${url}show_nivel`, { method: 'GET' })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            let curso = data.data.map((value,index)=>{
+              return {
+                id:value.id_nivel,
+                numero:value.numero,
+                nemonico:value.nemonico,
+                termino:value.termino,
+                ip_actualizacion:value.ip_actualizacion,
+                fecha_actualizacion:value.fecha_actualizacion,
+                usuarios_ultima_gestion:value.usuarios_ultima_gestion,
+                estado:value.estado
+              }
+            })
+
+            setCursoData(curso)
+
+          })
+  }
+
+  function getParalelos() {
+    let configuraciones = {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+
+    fetch(`${url}showParalelo`, configuraciones).then((response) => {
+      return response.json();
+    }).then((data) => {
+      if (data.data) {
+        let data_mapeada = data.data.map((value, index) => {
+          return {
+            id: value.id_paralelo,
+            numero: index + 1,
+            paralelo: value.numero_paralelo,
+            ip_actualizacion: value.ip_actualizacion,
+            fecha_actualizacion: value.fecha_actualizacion,
+            usuarios_ultima_gestion: value.usuarios_ultima_gestion,
+            estado: value.estado
+          }
+        })
+
+        setParalelo(data_mapeada)
+      }
+    })
+
   }
 
   const handleAdd = () => {
