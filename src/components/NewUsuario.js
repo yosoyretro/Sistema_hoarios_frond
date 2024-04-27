@@ -34,6 +34,8 @@ const NewUsuario = (props) =>{
   }
 
   function createUser(value){
+    console.log("Soy el value")
+    console.log(value)
     fetch(`${url}create_usuario`, { method: 'POST',headers: {'Content-Type': 'application/json'},body: JSON.stringify({
             cedula: value.cedula,
             nombres: value.nombres,
@@ -41,11 +43,12 @@ const NewUsuario = (props) =>{
             id_rol:value.perfil.value
           }),
         }).then((response) => {
-            if (!response.ok) {
-              throw new Error(response.message);
-            }
+            console.log("Esto fue lo que me trajo lel response")
+            console.log(response)
             return response.json();
           }).then((data) => {
+            console.log("Esto fue lo que me trajo lel response")
+            console.log(data)
             props.getUser();
             Formulario.current.resetFields();
             props.onCloseModal();

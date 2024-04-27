@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { SettingOutlined, UserOutlined, BankOutlined, CalendarOutlined, BookOutlined, GlobalOutlined, FolderOutlined, ApartmentOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import { SettingOutlined, UserOutlined, BankOutlined, CalendarOutlined, BookOutlined, GlobalOutlined, FolderOutlined, ApartmentOutlined, UserSwitchOutlined, DesktopOutlined, KeyOutlined, DashOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom"
 import { Button } from "antd";
 
@@ -73,6 +73,16 @@ const Aside = ({ children }) => {
                   <MenuItem disabled icon={<CalendarOutlined />} style={{ background: '#000000', color: 'white' }}>{"Horarios"}</MenuItem>
                 </Link>
 
+              </SubMenu>
+
+              <SubMenu active label={"Asignaciones"} icon={<DesktopOutlined/>} style={{
+                background: '#000000',
+                color: 'white'
+              }}>
+                <Link to={"Asignacion/Carreras"}>
+                <MenuItem disabled icon={<DashOutlined />} style={{ background: '#000000', color: 'white' }}>{"Carreras"}</MenuItem>
+
+                </Link>
               </SubMenu>
         </Menu>
       </Sidebar>

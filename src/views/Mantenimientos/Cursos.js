@@ -26,7 +26,7 @@ const Cursos = () => {
                 nemonico:value.nemonico,
                 termino:value.termino,
                 ip_actualizacion:value.ip_actualizacion,
-                fecha_actualizacion:value.fecha_actualizacion,
+                fecha_actualizacion:new Date(value.fecha_actualizacion).toLocaleDateString(),
                 usuarios_ultima_gestion:value.usuarios_ultima_gestion,
                 estado:value.estado
               }
@@ -104,13 +104,6 @@ const Cursos = () => {
                 title:'termino',
                 width:10
               },
-              {
-                dataIndex:'ip_actualizacion',
-                title:'maquina ultima gestion',
-                width:20,
-                align:'center'
-              },
-
               {
                 dataIndex:'usuarios_ultima_gestion',
                 title:'Usuario ultima gestion',

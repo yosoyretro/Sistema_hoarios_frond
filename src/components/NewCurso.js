@@ -32,7 +32,7 @@ const NewCurso = (props) => {
         <Form onFinish={createCurso} ref={Formulario} layout="vertical">
           <Row>
             <Col span={24}>
-              <Form.Item label="Ingrese el paralelo" rules={
+              <Form.Item label="Ingrese el numero de curso" rules={
                 [
                   {
                     required:true,

@@ -2,6 +2,7 @@
   "token": {
     "fontSize": 12,
     "borderRadius": 0,
-    "wireframe": true
+    "wireframe": true,
+    "colorPrimary":"#274386"
   }
 }

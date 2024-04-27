@@ -1,10 +1,9 @@
 import Card from "antd/es/card/Card";
 import React,{useState,useEffect} from "react"
-import { Button, Collapse, Input, Table,Typography,Menu,Dropdown } from "antd";
+import { Button, Collapse, Input, Table,Typography,Menu,Dropdown,Select } from "antd";
 import { FilterOutlined, UserOutlined,MenuOutlined,DeleteOutlined,EditOutlined,FolderViewOutlined } from "@ant-design/icons";
 import FormItem from "antd/es/form/FormItem";
 import { Row, Col,Space } from "antd";
-import Select from "react-select";
 import { UserAddOutlined,ClearOutlined,SearchOutlined,SyncOutlined } from "@ant-design/icons";
 import NewUsuario from "../../components/NewUsuario.js"
 const Usuarios = () => {
@@ -116,7 +115,7 @@ const Usuarios = () => {
                                         <label>Escojar el perfil</label>
                                         <Select 
                                         style={{
-                                            height: '20px', // Establecer la altura deseada
+                                            width:"100%"
                                         }}
                                         defaultValue={"Escoja el perfil"}
                                         options={[
@@ -163,6 +162,7 @@ const Usuarios = () => {
                     style={{
                         margin: "5px"
                     }}
+                    bordered={false}
                     columns={[
                         {
                             dataIndex: "cedula",
@@ -190,12 +190,6 @@ const Usuarios = () => {
                             width: 20
                         },
                         {
-                            dataIndex: "maquina_creacion",
-                            title: "maquina creacion",
-                            width: 20,
-                            align:"center"
-                        },
-                        {
                             dataIndex: "usuario_creacion",
                             title: "creador",
                             width: 20,
@@ -221,7 +215,7 @@ const Usuarios = () => {
                     ]}
                     dataSource={dataTabla}
                     size="small"
-                    scroll={{ x: 50 }}
+                    scroll={{ x: 75 }}
                 />
 
             </Card>

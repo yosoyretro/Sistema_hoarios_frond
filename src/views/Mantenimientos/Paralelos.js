@@ -24,9 +24,9 @@ const Paralelos = () => {
           return {
             id:value.id_paralelo,
             numero:index+1,
-            paralelo:value.numero_paralelo,
+            paralelo:value.paralelo,
             ip_actualizacion:value.ip_actualizacion,
-            fecha_actualizacion:value.fecha_actualizacion,
+            fecha_actualizacion:new Date(value.fecha_actualizacion).toLocaleDateString(),
             usuarios_ultima_gestion:value.usuarios_ultima_gestion,
             estado:value.estado
           }
@@ -96,15 +96,9 @@ const Paralelos = () => {
               {
                 dataIndex:'paralelo',
                 title:'paralelo',
-                width:10
-              },
-              {
-                dataIndex:'ip_actualizacion',
-                title:'maquina ultima gestion',
                 width:10,
                 align:'center'
               },
-
               {
                 dataIndex:'usuarios_ultima_gestion',
                 title:'Usuario ultima gestion',

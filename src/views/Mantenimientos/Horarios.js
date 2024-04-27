@@ -1,95 +1,202 @@
+import React, { useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { Button, Card, Col, Collapse, Input, Row,Select, Space, Table } from 'antd';
 import moment from 'moment';
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import React, { useState, useEffect } from "react";
-import { Button, Collapse, Input, Row, Col, Space, Table, Typography, Menu, Card, Dropdown, Modal, notification } from "antd";
-//import { SyncOutlined, PlusCircleOutlined, ClearOutlined, SearchOutlined, EditOutlined, DeleteOutlined, MenuOutlined } from "@ant-design/icons";
-import "../../public/css/letras.css";
-import { foreign_key } from 'i/lib/methods.js';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import Typography from 'antd/es/typography/Typography';
+import { AppstoreAddOutlined, ClearOutlined, FilterOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import AsignarHorario from '../../components/AsignarHorario';
 
-const localizer = momentLocalizer(moment) // or globalizeLocalizer
-
-const Calendario = (props) => {
-
+const Calendario = () => {
   const { Title } = Typography;
-  //const [isOpenModal,setIsOpen] = useState(false);
-  //const [isOpenUpdateModal,setIsOpenUpdateModal] = useState(false);
-  const [horarioData, setHorarioData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  //const [formularioEditar,setFormularioEditar] = useState([]);
-  const url = "http://localhost:8000/api/istg/";
-
-  const mostrarNotificacion = (tipo, titulo, mensaje) => {
-    notification[tipo]({
-      message: titulo,
-      description: mensaje,
-    });
-  };
-
-  function CreateHorario() {
-    setLoading(true);
-    fetch(`${url}show_data_asignatura/`).then((response) => { return response.json() })
-      .then((data_request) => {
-        console.log("Soy la data request")
-        console.log(data_request)
-        if (data_request.ok) {
-          if (data_request.data) {
-            let data = data_request.data.map((value, index) => {
-              return {
-                key: index,
-                id: value.id_distribucion,
-                foreign_key: [value.id_educacion_global, value.id_usuario, value.id_carrera, value.id_nivel, value.id_paralelo, value.id_periodo_academico, value.id_materia],
-                horario_inicio: value.tiempo,
-                horario_terminada: value.tiempo,
-                dia:value.dia,
-                value:value.foreign_key
-              }
-            })
-            setHorarioData(data)
-          } else {
-            setHorarioData([]);
-          }
-        } else if (data_request.ok === false) {
-          mostrarNotificacion('error', 'A ocurrido un error', 'A ocurrido un error al obtener la informacion');
-        }
-      }).finally(() => {
-        setLoading(false);
-      }).catch(() => {
-        mostrarNotificacion('error', 'A ocurrido un error', 'Error interno en el servidor');
-      })
+  const [isOpen,setIsOpen] = useState(false)  
+  function closeHandleModal(){
+    setIsOpen(false);  
   }
 
-  
-
-
-
-  
-  
-  useEffect(() => {
-    CreateHorario()
-  },);
-
   return (
-    <div className="myCustomHeight">
-      <>
-        <Row style={{
-          display: "flex",
-          justifyContent: "center"
-        }}>
-          <Title level={3}>Mantenimiento de Horarios</Title>
-        </Row>
-        <br />
-        <Calendar
-          localizer={localizer}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: 500 }}
-        />
+    <div style={{ height: 500 }}>
+      <Row style={{
+                display:"flex",
+                justifyContent:"center"
+            }}>
+            <Title level={3}>Mantenimiento de Horario</Title>
+      </Row>
+      <Card bordered={false}>
+            <Collapse
+            bordered={false}
+            size="small"
+            defaultActiveKey={['1']}
+            expandIcon={<FilterOutlined />} accordion={true} items={[
+                {
+                    key: 1,
+                    label: 'Filtro de busqueda',
+                    children:
+                        <Row gutter={{ xs: 4, sm: 8, md: 16, lg:5 }} style={{
+                            margin: "10px"
+                        }}>
+                            <Col sm={8}>
+                                <label>Escoja la Institucion</label>
+                                <Select 
+                                style={{
+                                  width:"100%"
+                                }}
+                                options={[
+                                  {
+                                    value:"Carlos Javier Moreno Alcivar",
+                                    label:"Carlos Javier Moreno Alcivar"
+                                  }
+                                ]}/>
+                            </Col>
 
-      </>
+                            <Col sm={8}>
+                                <label>Escoja la carrera</label>
+                                <Select 
+                                style={{
+                                  width:"100%"
+                                }}
+                                options={[
+                                  {
+                                    value:"Desarrollo de software",
+                                    label:"Desarrollo de software"
+                                  }
+                                ]}/>
+                            </Col>
+
+                            <Col sm={8}>
+                                <label>Escoja la Curso</label>
+                                <Select 
+                                style={{
+                                  width:"100%"
+                                }}
+                                options={[
+                                  {
+                                    value:"2do",
+                                    label:"2do"
+                                  }
+                                ]}/>
+                            </Col>
+                              
+
+                            <Col sm={8}>
+                                <label>Escoja el paralelo</label>
+                                <Select 
+                                style={{
+                                  width:"100%"
+                                }}
+                                options={[
+                                  {
+                                    value:"2do",
+                                    label:"2do"
+                                  }
+                                ]}/>
+                            </Col>
+                        </Row>
+                }
+            ]}
+
+            >
+
+            </Collapse>
+            <Space style={{
+                    margin:"5px"
+                }}>
+                    <Row gutter={{ xs: 8, sm: 24, md: 150, lg: 24 }}>
+                        <Col>
+                            <Button icon={<AppstoreAddOutlined/>} onClick={()=>{
+                              console.log("Estoy llegando en el onclicck")
+                              setIsOpen(true)
+                            }}>Crear una nueva asignacion</Button>
+
+                        </Col>
+
+
+                        <Col>
+                            <Button icon={<SyncOutlined/>} onClick={()=>{
+                              
+                            }}>Descargar datos</Button>
+
+                        </Col>
+
+                        <Col>
+                            <Button icon={<ClearOutlined/>}>Limpiar</Button>
+                        </Col>
+
+                        <Col>
+                            <Button icon={<SearchOutlined/>}>Buscar</Button>
+                        </Col>
+
+                    </Row>
+                </Space>
+        <Row>
+          <Title level={5}>Cantidad : </Title>
+        </Row>
+        <Table
+          columns={[
+            {
+              dataIndex:"numero",
+              title:"N°",
+              width:20,
+              align:'center'
+            },
+            {
+              dataIndex:"instituto",
+              title:"Instituto",
+              width:20,
+              align:'center'
+            },
+            {
+              dataIndex:"carrera",
+              title:"Carrera",
+              width:20,
+              align:'center'
+            },
+            {
+              dataIndex:"curso",
+              title:"Curso",
+              width:20,
+              align:'center'
+            },
+            {
+              dataIndex:"paralelo",
+              title:"Paralelo",
+              width:20,
+              align:'center'
+            },
+            {
+              dataIndex: "maquina_creacion",
+              title: "maquina creacion",
+              width: 20,
+              align:"center"
+            },
+            {
+              dataIndex: "usuario_creacion",
+              title: "creador",
+              width: 20,
+              align:"center"
+            },
+            {
+              dataIndex: "estado",
+              title: "Estado",
+              width: 20,
+              align:"center"
+            },
+            {
+              dataIndex:"acciones",
+              title:"Acciones",
+              width:20,
+              align:'center'
+            }
+          ]}
+          size="small"
+          scroll={{ x: 50 }}
+
+        />
+      </Card>
+
+      <AsignarHorario isOpen={isOpen} closeHandleModal={closeHandleModal}/>
     </div>
   );
-}
-
+};
 
 export default Calendario;

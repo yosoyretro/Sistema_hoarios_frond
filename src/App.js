@@ -10,6 +10,7 @@ import Horarios from "./views/Mantenimientos/Horarios";
 import NewEducacionGlobal from "./views/Formularios/NewEducacionGlobal";
 
 import Aside from "./components/Aside";
+import AsignacionCarreras from "./views/Asignaciones/AsignacionCarreras";
 function App() {
 
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/Mantenimientos/tituloacademico" element={<TitulosAcademicos/>}/>
           <Route path="/Mantenimientos/horarios" element={<Horarios/>}/>
           <Route path="/Formulario/crearEducacionGobal" element={<NewEducacionGlobal/>}/>
+          <Route path="/Asignacion/Carreras" element={<AsignacionCarreras/>}/>
         </Routes>
       </Aside>
     </Router>
