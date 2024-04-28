@@ -1,15 +1,13 @@
 import { CiCircleOutlined, DeleteOutlined, EditOutlined, InfoCircleOutlined, InfoOutlined, InsertRowRightOutlined, LeftOutlined, LoadingOutlined, LogoutOutlined, OrderedListOutlined, RightOutlined, VerifiedOutlined } from "@ant-design/icons";
 import Icon from "@ant-design/icons/lib/components/Icon";
 import { render } from "@testing-library/react";
-import { Button, Form, Modal, Row, Select,Space,Spin,Steps, Table, Tree, Typography } from "antd";
+import { Button, Form, Modal, Result, Row, Select,Space,Spin,Steps, Table, Tree, Typography } from "antd";
 import { useForm } from "antd/es/form/Form";
 import Title from "antd/es/skeleton/Title";
 import React, { useEffect, useRef, useState } from "react";
 
 
-
-
-const NewAsignacion = () => {
+const NewPlanificacionAcademica = (props) => {
     const { Title } = Typography;
     const [pasosCurret,setPasosCurret] = useState(0);
     const [institucion,setInstitucion] = useState([]);
@@ -23,8 +21,10 @@ const NewAsignacion = () => {
     const [carreraSelect,setCarreraSelect] = useState([]);
     const [userSelect,setUserSelect] = useState({});
     const formulario = useRef(null);
-    const [objDataSource,setObjDataSource] = useState({});
+    const [informativo,setInformativo] = useState({})
+    const [modalIsOpen,setIsOpen] = useState(props.open)
     const [user,setUser] = useState([]);
+    const url = "http://localhost:8000/api/istg/";
     const [pasos,setPasos] = useState([
         {
             title:'parametros',
@@ -54,7 +54,9 @@ const NewAsignacion = () => {
         }
     ]);
     
-
+    useEffect(()=>{
+        setIsOpen(props.open)
+    },[props.open])
     const addRow = () => {
         const newRow = {
             key: dataSource.length + 1,
@@ -67,10 +69,10 @@ const NewAsignacion = () => {
 
 
 
-    const url = "http://localhost:8000/api/istg/";
     
-    function seguirOpciones(){
-        if(pasosCurret + 1 == 1){
+    
+    function seguirOpciones(paso){
+        if(paso === 1){
             setPasos([{
                 title:'parametros',
                 status: 'proces', 
@@ -86,10 +88,11 @@ const NewAsignacion = () => {
                 status:'wait',
                 icon:<VerifiedOutlined/>,
             }]);
-            setPasosCurret(pasosCurret + 1)
         }
-        if(pasosCurret+ 1 == 2){
-            setPasos([{
+        if(paso === 2){
+            console.log("entro en el segudno if")
+            setPasos([
+            {
                 title:'parametros',
                 status: 'proces', 
                 icon:<EditOutlined/>,
@@ -104,9 +107,9 @@ const NewAsignacion = () => {
                 status:'proces',
                 icon:<VerifiedOutlined/>,
             }]);
-            setPasosCurret(pasosCurret + 1)
         }
-        if(pasosCurret + 1 == 3){
+        
+        if(0){
             setPasos([
                 {
                     title:'parametros',
@@ -115,7 +118,7 @@ const NewAsignacion = () => {
                 },
                 {
                     title:'Validacion Finalizada',
-                    status: 'wait', 
+                    status: 'proces', 
                     icon:<OrderedListOutlined/>,
                 },
                 {
@@ -124,9 +127,9 @@ const NewAsignacion = () => {
                     icon:<VerifiedOutlined/>,
                 }
             ]);
-            setPasosCurret(0)
+            //setPasosCurret(0)
         }
-        
+        setPasosCurret(paso) 
     }
     
     async function showInstituto() {
@@ -172,8 +175,6 @@ const NewAsignacion = () => {
                     value:value.id_carrera,
                     label:value.nombre,
                 }))
-                console.log("Soy la data mapeada")
-                console.log(data_mapeada)
                 setCarrera(data_mapeada)
             }
             return true
@@ -279,34 +280,50 @@ const NewAsignacion = () => {
     }
 
     async function createPlanificacionAcademica (){
-        let arreglo_obj = []
-        seguirOpciones()
-        dataSource.forEach(element => {
-            let mapeoData = element.paralelos.map((valor)=>{
-                return {
-                    id_instituto:institucionSelect,
-                    id_carrera:carreraSelect,
-                    id_materia:element.materia,
-                    id_curso:element.curso,
-                    id_paralelo:valor,
-                    id_periodo_electivo:1
-                }
+        try{
+            seguirOpciones(1)
+            let arreglo_obj = []
+            dataSource.forEach(element => {
+                let mapeoData = element.paralelos.map((valor)=>{
+                    return {
+                        id_coordinador:userSelect,
+                        id_instituto:institucionSelect,
+                        id_carrera:carreraSelect,
+                        id_materia:element.materia,
+                        id_curso:element.curso,
+                        id_paralelo:valor,
+                        id_periodo_electivo:1
+                    }
+                })
+                arreglo_obj.push(mapeoData)
+            });
+            const arregloUnido = arreglo_obj.reduce((acc, current) => acc.concat(current), []);
+    
+            let response = await fetch(`${url}Planificaciones/createPlanificacionAcademico`, { method: 'POST',headers: {'Content-Type': 'application/json'},body: JSON.stringify({"data":arregloUnido}),})
+            let data = await response.json()
+            if(data.ok){
+                setInformativo({
+                    status:"success",
+                    title:"Operacion Realizada con exito",
+                    subTitle:data.message,
+                })
+            }else{
+                setInformativo({
+                    status:"warning",
+                    title:"A ocurrido un error",
+                    subTitle:data.message,
+                })
+            }
+            seguirOpciones(2)
+        }catch(Error){    
+            console.error(Error)
+            setInformativo({
+                status:"warning",
+                title:"A ocurrido un error",
+                subTitle:"Error interno en el servidor",
             })
-            arreglo_obj.push(mapeoData)
-        });
-        const arregloUnido = arreglo_obj.reduce((acc, current) => acc.concat(current), []);
-
-        fetch(`${url}Planificaciones/createPlanificacionAcademico`, 
-        { method: 'POST',headers: {'Content-Type': 'application/json'},body: JSON.stringify({"data":arregloUnido}),
-        }).then((response) => {
-            return response.json();
-          }).then((data) => {
-            console.log("Soy la data")
-            console.log(data)
-          }).catch((error) => {
-            console.error('A ocurrido un error:', error);
-          });
-
+            seguirOpciones(2)
+        }
     }
     
     useEffect(()=>{
@@ -325,7 +342,7 @@ const NewAsignacion = () => {
     },[])
     return (
     <>
-        <Modal open={true} okText="siguiente" footer={false} closeIcon={false} size="small" onOk={seguirOpciones} okButtonProps={loading} width={1000}
+        <Modal open={modalIsOpen} okText="siguiente" footer={false} closeIcon={false} size="small" onOk={seguirOpciones} okButtonProps={loading} width={1000}
 >
             <Spin spinning={loading} tip="Cargando..." size="large" style={{
                 alignItems:"center",
@@ -366,6 +383,7 @@ const NewAsignacion = () => {
                         
                         <Button onClick={addRow} icon={<InsertRowRightOutlined/>}>Agregar Fila</Button>
                         <Table
+
                             pagination={false}
                             bordered={false}
                             scroll={{ x:1000 }}
@@ -463,7 +481,10 @@ const NewAsignacion = () => {
                             flexDirection:"column-reverse",
                             alignItems:"flex-end"
                         }}>
-                            <Button disabled={loading} onClick={createPlanificacionAcademica} type="primary" htmlType="submit"><RightOutlined/> siguiente paso</Button>
+                            <Space>    
+                                <Button disabled={loading} onClick={props.handleCloseModal} danger type="primary" htmlType="submit"><LeftOutlined/> Cancelar</Button>
+                                <Button disabled={loading} onClick={createPlanificacionAcademica} type="primary" htmlType="submit"><RightOutlined/> siguiente paso</Button>
+                            </Space>
                         </Row>
                         
                     </Form>
@@ -481,9 +502,28 @@ const NewAsignacion = () => {
                     </div>
                 )
             }
+            {
+                pasosCurret === 2 &&(
+                   <Result
+                        status={informativo.status}
+                        title={informativo.title}
+                        subTitle={informativo.subTitle}
+                        extra={[
+                            <Button type="primary" key="console" onClick={()=>{
+                                props.handleCloseModal()
+                                setDataSource([])
+                                setUserSelect([])
+                                setInstitucionSelect([])
+                                setCarreraSelect([])
+                                seguirOpciones(0)
+                            }}>Aceptar</Button>
+                        ]}
+                   /> 
+                )
+            }
             
         </Modal>
     </>)
 }
 
-export default NewAsignacion;
+export default NewPlanificacionAcademica;

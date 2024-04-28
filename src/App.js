@@ -8,9 +8,8 @@ import EducacionGlobal from "./views/Mantenimientos/EducacionGlobal";
 import TitulosAcademicos from "./views/Mantenimientos/TitulosAcademicos";
 import Horarios from "./views/Mantenimientos/Horarios";
 import NewEducacionGlobal from "./views/Formularios/NewEducacionGlobal";
-
 import Aside from "./components/Aside";
-import AsignacionCarreras from "./views/Asignaciones/AsignacionCarreras";
+import PlanificacionAcademica from "./views/Planificaciones/PlanificacionAcademica";
 function App() {
 
   return (
@@ -26,7 +25,7 @@ function App() {
           <Route path="/Mantenimientos/tituloacademico" element={<TitulosAcademicos/>}/>
           <Route path="/Mantenimientos/horarios" element={<Horarios/>}/>
           <Route path="/Formulario/crearEducacionGobal" element={<NewEducacionGlobal/>}/>
-          <Route path="/Asignacion/Carreras" element={<AsignacionCarreras/>}/>
+          <Route path="/Planificaciones/PlanificacionAcademia" element={<PlanificacionAcademica/>}/>
         </Routes>
       </Aside>
     </Router>

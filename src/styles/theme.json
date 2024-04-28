@@ -3,6 +3,8 @@
     "fontSize": 12,
     "borderRadius": 0,
     "wireframe": true,
-    "colorPrimary":"#274386"
+    "colorPrimary":"#274386",
+    "colorDanger":"#274386",
+    "danger":"red"
   }
 }

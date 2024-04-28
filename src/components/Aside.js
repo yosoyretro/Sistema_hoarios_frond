@@ -75,12 +75,12 @@ const Aside = ({ children }) => {
 
               </SubMenu>
 
-              <SubMenu active label={"Asignaciones"} icon={<DesktopOutlined/>} style={{
+              <SubMenu active label={"Planificaciones"} icon={<DesktopOutlined/>} style={{
                 background: '#000000',
                 color: 'white'
               }}>
-                <Link to={"Asignacion/Carreras"}>
-                <MenuItem disabled icon={<DashOutlined />} style={{ background: '#000000', color: 'white' }}>{"Carreras"}</MenuItem>
+                <Link to={"Planificaciones/PlanificacionAcademia"}>
+                <MenuItem disabled icon={<DashOutlined />} style={{ background: '#000000', color: 'white' }}>{"Planificacion Academica"}</MenuItem>
 
                 </Link>
               </SubMenu>
