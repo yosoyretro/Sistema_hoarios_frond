@@ -28,3 +28,7 @@ img{
   padding: 15px;
   border-radius: 2px;
 }
+
+.bg-table{
+  background-color: brown;
+}

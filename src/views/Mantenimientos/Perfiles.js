@@ -34,7 +34,7 @@ const Perfiles = () => {
                 id:value.id_rol,
                 descripcion:value.descripcion,
                 ip_actualizacion:value.ip_actualizacion,
-                fecha_actualizacion:value.fecha_actualizacion,
+                fecha_actualizacion:new Date(value.fecha_actualizacion).toLocaleDateString(),
                 usuarios_ultima_gestion:value.usuarios_ultima_gestion,
                 estado:value.estado
               }
@@ -116,12 +116,6 @@ const Perfiles = () => {
                 width:75,
                 align:'center'
 
-              },
-              {
-                dataIndex:'ip_actualizacion',
-                title:'maquina ultima gestion',
-                width:75,
-                align:'center'
               },
               {
                 dataIndex:'fecha_actualizacion',
