@@ -1,15 +1,24 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { SettingOutlined, UserOutlined, BankOutlined, CalendarOutlined, BookOutlined, GlobalOutlined, FolderOutlined, ApartmentOutlined, UserSwitchOutlined, DesktopOutlined, KeyOutlined, DashOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom"
-import { Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { SettingOutlined, UserOutlined, BankOutlined, CalendarOutlined, BookOutlined, GlobalOutlined, FolderOutlined, ApartmentOutlined, UserSwitchOutlined, DesktopOutlined, KeyOutlined, DashOutlined, FormOutlined } from "@ant-design/icons";
+import { Breadcrumb, Button, Layout, theme, Menu } from "antd";
+import Sider from "antd/es/layout/Sider";
+import { Content, Footer, Header } from "antd/es/layout/layout";
+
+const { SubMenu } = Menu;
 
 const Aside = ({ children }) => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 500);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); // Cambiado a 768 para móviles
+  const [collapsed, setCollapsed] = useState(isMobile); // Inicialmente colapsado en móviles
+  const [selectedItem, setSelectedItem] = useState('1');
+  const { token: { colorBgContainer, borderRadiusLG }, } = theme.useToken();
+
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 500);
+      setIsMobile(window.innerWidth < 768); // Cambiado a 768 para móviles
+      if (window.innerWidth < 768) {
+        setCollapsed(true); // Si es móvil, colapsar automáticamente
+      }
     };
     window.addEventListener('resize', handleResize);
     return () => {
@@ -17,80 +26,103 @@ const Aside = ({ children }) => {
     };
   }, []);
 
+  const handleMenuClick = (e) => {
+    setSelectedItem(e.key);
+  };
+
+  function getItem(label, key, icon, children, url = '') {
+    return {
+      key,
+      icon,
+      children,
+      label,
+      url,
+    };
+  }
+
+  const items = [
+    getItem('Dashboard', '1', <DesktopOutlined />, '', '/dashboard'),
+    getItem('Mantenimientos', 'subManetenimiento', <SettingOutlined />, [
+      getItem('EducacionGlobal', '7', '', '', '/Mantenimientos/educacionGobal'),
+      getItem('Perfiles', '3', '', '', '/Mantenimientos/perfiles'),
+      getItem('Usuarios', '4', '', '', '/Mantenimientos/usuarios'),
+      getItem('Materias', '8', '', '', '/Mantenimientos/materias'),
+      getItem('Cursos', '5', '', '', '/Mantenimientos/cursos'),
+      getItem('Paralelos', '6', '', '', '/Mantenimientos/paralelos'),
+      getItem('TitulosAcademicos', '9', '', '', '/Mantenimientos/tituloacademico'),
+    ]),
+    getItem('Planificaciones', 'subPlanificaciones', <FormOutlined />, [
+      getItem('Planificacion Academica', '10', '', '', '/Planificaciones/PlanificacionAcademia'),
+    ]),
+    getItem('Configuraciones', '11', <SettingOutlined />, '', '/settings'),
+  ];
+
   return (
-    <div style={{
-      display: 'flex',
-      height: isMobile ? 'auto' : '100vh',
-    }}>
-      <Sidebar collapsed={isMobile} backgroundColor="#000000">
-        <Menu
-          menuItemStyles={{
-            button: ({ level, active, disabled }) => {
-              if (level === 0)
-                return {
-                  backgroundColor: active ? '#000000' : undefined,
-                  color: 'white',
-                };
-            },
+    <Layout
+      style={{
+        minHeight: '100vh',
+      }}
+    >
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <div className="demo-logo-vertical" />
+        <Menu theme="dark" defaultSelectedKeys={['1']} selectedKeys={[selectedItem]} mode="inline" onClick={handleMenuClick}>
+          {items.map(item => (
+            item.children ? (
+              <SubMenu key={item.key} icon={item.icon} title={item.label}>
+                {item.children.map(child => (
+                  <Menu.Item key={child.key}>
+                    <Link to={child.url}>{child.label}</Link>
+                  </Menu.Item>
+                ))}
+              </SubMenu>
+            ) : (
+              <Menu.Item key={item.key} icon={item.icon}>
+                <Link to={item.url}>{item.label}</Link>
+              </Menu.Item>
+            )
+          ))}
+        </Menu>
+      </Sider>
+      <Layout>
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+          }}
+        />
+        <Content
+          style={{
+            margin: '0 16px',
           }}
         >
-
-          <MenuItem disabled icon={<BankOutlined />}>Sistema Academico</MenuItem>
-
-              <SubMenu active label={"Mantenimientos"} icon={<SettingOutlined />} style={{
-                background: '#000000',
-                color: 'white'
-              }}>
-                <Link to={"Mantenimientos/usuarios"}>
-                  <MenuItem disabled icon={<UserOutlined />} style={{ background: '#000000', color: 'white' }}>{"usuarios"}</MenuItem>
-                </Link>
-
-                <Link to={"Mantenimientos/perfiles"}>
-                  <MenuItem disabled icon={<UserSwitchOutlined />} style={{ background: '#000000', color: 'white' }}>{"Perfiles"}</MenuItem>
-                </Link>
-
-                <Link to={"Mantenimientos/cursos"}>
-                  <MenuItem disabled icon={<ApartmentOutlined />} style={{ background: '#000000', color: 'white' }}>{"Cursos"}</MenuItem>
-                </Link>
-
-                <Link to={"Mantenimientos/paralelos"}>
-                  <MenuItem disabled icon={<ApartmentOutlined />} style={{ background: '#000000', color: 'white' }}>{"Paralelos"}</MenuItem>
-                </Link>
-
-                <Link to={"Mantenimientos/educacionGobal"}>
-                  <MenuItem disabled icon={<GlobalOutlined />} style={{ background: '#000000', color: 'white' }}>{"Educacion Global"}</MenuItem>
-                </Link>
-
-                <Link to={"Mantenimientos/materias"}>
-                  <MenuItem disabled icon={<BookOutlined />} style={{ background: '#000000', color: 'white' }}>{"Materias"}</MenuItem>
-                </Link>
-
-                <Link to={"Mantenimientos/tituloacademico"}>
-                  <MenuItem disabled icon={<FolderOutlined />} style={{ background: '#000000', color: 'white' }}>{"Titutlos Academicos"}</MenuItem>
-                </Link>
-
-                <Link to={"Mantenimientos/horarios"}>
-                  <MenuItem disabled icon={<CalendarOutlined />} style={{ background: '#000000', color: 'white' }}>{"Horarios"}</MenuItem>
-                </Link>
-
-              </SubMenu>
-
-              <SubMenu active label={"Planificaciones"} icon={<DesktopOutlined/>} style={{
-                background: '#000000',
-                color: 'white'
-              }}>
-                <Link to={"Planificaciones/PlanificacionAcademia"}>
-                <MenuItem disabled icon={<DashOutlined />} style={{ background: '#000000', color: 'white' }}>{"Planificacion Academica"}</MenuItem>
-
-                </Link>
-              </SubMenu>
-        </Menu>
-      </Sidebar>
-      <main style={{width:"100%"}}>
-        {children}
-      </main>
-    </div>
-
+          <Breadcrumb
+            style={{
+              margin: '16px 0',
+            }}
+          >
+            <Breadcrumb.Item></Breadcrumb.Item>
+            <Breadcrumb.Item></Breadcrumb.Item>
+          </Breadcrumb>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            {children}
+          </div>
+        </Content>
+        <Footer
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+        </Footer>
+      </Layout>
+    </Layout>
   );
 }
 

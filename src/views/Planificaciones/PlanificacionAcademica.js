@@ -6,7 +6,7 @@ const PlanificacionAcademica = () => {
     const url = "http://localhost:8000/api/istg/";
     const { Title } = Typography;
     const [modalIsOpen,setModalIsOpen] = useState(false);
-    
+    const [dataTable,setDataTable] = useState([]);
     const handleMenuClick = (action, record) => {
         console.log(`Se hizo clic en "${action}" para el usuario con cédula ${record}`);
         if(action === "editar"){
@@ -31,12 +31,27 @@ const PlanificacionAcademica = () => {
             };
             let response = await fetch(`${url}Planificaciones/getPlanificacionAcademicas`, configuraciones);
             let data = await response.json()
-            console.log("Soy la data")
-            console.log(data)
+            if(data){
+                if(data.ok){
+                        setDataTable(data.data.map((element,index) => {
+                            return {
+                                id:index,
+                                numero:index+1,
+                                coordinador:element.coordinador,
+                                instituto:element.educacion_global,
+                                fecha_actualizacion:new Date(element.fecha_ultima_actualizacion).toLocaleDateString()
+                            }
+                        }));
+                    
+                }else{
+                    
+                }
+            }
         }catch(Error){
 
         }
     }
+
     function handleCloseModal(){
         setModalIsOpen(false)
     }
@@ -68,16 +83,20 @@ const PlanificacionAcademica = () => {
             <Table
                 columns={[
                     {
+                        key:"numero",
+                        dataIndex:"numero",
                         title:"Nº",
                         width:10,
                         align:"center"
                     },
                     {
+                        dataIndex:"coordinador",
                         title:"Coordinador de carrera",
                         width:50,
                         align:"center"
                     },
                     {
+                        dataIndex:"instituto",
                         title:"Instituto",
                         width:50,
                         align:"center"
@@ -85,13 +104,6 @@ const PlanificacionAcademica = () => {
                     {
                         dataIndex:'fecha_actualizacion',
                         title:'fecha ultima gestion',
-                        width:25,
-                        align:'center'
-        
-                      },
-                      {
-                        dataIndex:'estado',
-                        title:'Estado',
                         width:25,
                         align:'center'
         
@@ -108,6 +120,7 @@ const PlanificacionAcademica = () => {
                         ),
                       }
                 ]}
+                dataSource={dataTable}
             />
         </Card>
         <NewPlanificacionAcademica open={modalIsOpen} handleCloseModal={handleCloseModal}/>
