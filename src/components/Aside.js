@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { SettingOutlined, UserOutlined, BankOutlined, CalendarOutlined, BookOutlined, GlobalOutlined, FolderOutlined, ApartmentOutlined, UserSwitchOutlined, DesktopOutlined, KeyOutlined, DashOutlined, FormOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Layout, theme, Menu } from "antd";
+import { SettingOutlined,  DesktopOutlined, FormOutlined } from "@ant-design/icons";
+import { Breadcrumb, Layout, theme, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 
@@ -43,7 +43,7 @@ const Aside = ({ children }) => {
   const items = [
     getItem('Dashboard', '1', <DesktopOutlined />, '', '/dashboard'),
     getItem('Mantenimientos', 'subManetenimiento', <SettingOutlined />, [
-      getItem('EducacionGlobal', '7', '', '', '/Mantenimientos/educacionGobal'),
+      //getItem('EducacionGlobal', '7', '', '', '/Mantenimientos/educacionGobal'),
       getItem('Perfiles', '3', '', '', '/Mantenimientos/perfiles'),
       getItem('Usuarios', '4', '', '', '/Mantenimientos/usuarios'),
       getItem('Materias', '8', '', '', '/Mantenimientos/materias'),
@@ -52,9 +52,10 @@ const Aside = ({ children }) => {
       getItem('TitulosAcademicos', '9', '', '', '/Mantenimientos/tituloacademico'),
     ]),
     getItem('Planificaciones', 'subPlanificaciones', <FormOutlined />, [
-      getItem('Planificacion Academica', '10', '', '', '/Planificaciones/PlanificacionAcademia'),
+      getItem('Calendario', '10', '', '', '/Mantenimientos/horarios'),
+      getItem('Planificacion Academica', '11', '', '', '/Planificaciones/PlanificacionAcademia'),
     ]),
-    getItem('Configuraciones', '11', <SettingOutlined />, '', '/settings'),
+    getItem('Configuraciones', '12', <SettingOutlined />, '', '/settings'),
   ];
 
   return (
