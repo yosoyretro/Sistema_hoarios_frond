@@ -50,6 +50,8 @@ const Aside = ({ children }) => {
       getItem('Cursos', '5', '', '', '/Mantenimientos/cursos'),
       getItem('Paralelos', '6', '', '', '/Mantenimientos/paralelos'),
       getItem('TitulosAcademicos', '9', '', '', '/Mantenimientos/tituloacademico'),
+      getItem('Horarios', '12', '', '', '/Mantenimientos/horarios'),
+      getItem('Calendario', '13', '', '', '/Mantenimientos/calendario'),
     ]),
     getItem('Planificaciones', 'subPlanificaciones', <FormOutlined />, [
       getItem('Planificacion Academica', '10', '', '', '/Planificaciones/PlanificacionAcademia'),
