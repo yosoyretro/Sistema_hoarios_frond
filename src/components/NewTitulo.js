@@ -1,60 +1,91 @@
-import React from 'react';
-import { Modal, Form, Input, Button, notification } from 'antd';
-import { SaveOutlined } from '@ant-design/icons';
+import React, { useState, useEffect, useRef } from "react";
+import { Modal, Form, Input, Row, Col } from "antd";
 
-const NewTitulo = ({ open, handleCloseModal, getTitulos }) => {
-  const [form] = Form.useForm();
+const NewTitulo = (props) => {
+  const [isOpen, setIsOpen] = useState(props.open);
+  const Formulario = useRef(null);
   const url = "http://localhost:8000/api/istg/";
 
-  const mostrarNotificacion = (tipo, titulo, mensaje) => {
-    notification[tipo]({
-      message: titulo,
-      description: mensaje,
-    });
-  };
+  useEffect(() => {
+    setIsOpen(props.open);
+  }, [props.open]);
 
-  const onFinish = (values) => {
-    const data_request = {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
-    };
-    fetch(`${url}create_titulo_academico`, data_request)
+  const createTitulo = (value) => {
+    fetch(`${url}create_titulo_academico`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        codigo: value.codigo,
+        nemonico: value.nemonico,
+        descripcion: value.descripcion,
+      }),
+    })
       .then((response) => response.json())
-      .then((request_backend) => {
-        if (request_backend.ok) {
-          mostrarNotificacion("success", "Operación Realizada con éxito", request_backend.msg);
-        } else {
-          mostrarNotificacion("error", "Error", request_backend.msg);
-        }
-      })
-      .finally(() => {
-        handleCloseModal();
-        form.resetFields();
-        getTitulos();
+      .then((data) => {
+        props.getTitulos();
+        Formulario.current.resetFields();
+        props.handleCloseModal();
       })
       .catch((error) => {
-        mostrarNotificacion("error", "Error", error.message);
+        console.error('A ocurrido un error:', error);
       });
   };
 
   return (
-    <Modal title="Crear Título Académico" footer={null} open={open} onCancel={handleCloseModal}>
-      <Form form={form} onFinish={onFinish} layout="vertical" autoComplete="off">
-        <Form.Item
-          name="descripcion"
-          label="Descripción"
-          rules={[{ required: true, message: 'La descripción es requerida' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
-            Crear Título Académico
-          </Button>
-        </Form.Item>
+    <Modal
+      onCancel={() => {
+        if (Formulario.current) {
+          Formulario.current.resetFields();
+        }
+        props.handleCloseModal();
+      }}
+      onOk={() => {
+        if (Formulario && Formulario.current) {
+          Formulario.current.submit();
+        }
+      }}
+      size="large"
+      okText="Guardar"
+      cancelText="Cancelar"
+      title="Nuevo Título Académico"
+      open={isOpen}
+    >
+      <Form onFinish={createTitulo} ref={Formulario} layout="vertical">
+        <Row>
+          <Col span={24}>
+            <Form.Item
+              label="Código"
+              name="codigo"
+              rules={[
+                { required: true, message: "El campo de código es requerido" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="Nemonico"
+              name="nemonico"
+              rules={[
+                { required: true, message: "El campo de nemonico es requerido" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="Descripción"
+              name="descripcion"
+              rules={[
+                { required: true, message: "El campo de descripción es requerido" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   );

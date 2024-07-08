@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Input, Row, Col, Space, Table, Typography, Menu, Dropdown } from "antd";
+import { Button, Card, Row, Col, Space, Table, Typography, Menu, Dropdown } from "antd";
 import { SyncOutlined, FileAddOutlined, EditOutlined, DeleteOutlined, MenuOutlined } from "@ant-design/icons";
 import NewTitulo from "../../components/NewTitulo.js";
 import UpdateTitulo from "../../components/UpdateTitulo.js";
@@ -16,12 +16,12 @@ const TitulosAcademicos = () => {
     getTitulos();
   }, []);
 
-  function handleCloseModal() {
+  const handleCloseModal = () => {
     setIsOpenNewModal(false);
     setIsOpenUpdateModal(false);
-  }
+  };
 
-  function getTitulos() {
+  const getTitulos = () => {
     fetch(`${url}show_data_titulo_academico`, { method: 'GET' })
       .then((response) => response.json())
       .then((data) => {
@@ -37,7 +37,7 @@ const TitulosAcademicos = () => {
         });
         setTitulos(titulos);
       });
-  }
+  };
 
   const handleMenuClick = (action, record) => {
     if (action === "editar") {
@@ -57,7 +57,7 @@ const TitulosAcademicos = () => {
   return (
     <>
       <Row style={{ display: "flex", justifyContent: "center" }}>
-        <Title level={3}>Mantenimiento de Titulos Académicos</Title>
+        <Title level={3}>Mantenimiento de Títulos Académicos</Title>
       </Row>
 
       <Card bordered={false}>
@@ -70,7 +70,7 @@ const TitulosAcademicos = () => {
             </Col>
 
             <Col>
-              <Button icon={<SyncOutlined />} onClick={() => { getTitulos() }}>
+              <Button icon={<SyncOutlined />} onClick={getTitulos}>
                 Descargar datos
               </Button>
             </Col>
