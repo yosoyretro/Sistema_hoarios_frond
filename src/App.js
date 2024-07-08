@@ -10,6 +10,7 @@ import Horarios from "./views/Mantenimientos/Horarios";
 import NewEducacionGlobal from "./views/Formularios/NewEducacionGlobal";
 import Aside from "./components/Aside";
 import PlanificacionAcademica from "./views/Planificaciones/PlanificacionAcademica";
+import Calendario from "./views/Mantenimientos/Calendario";
 function App() {
 
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/Mantenimientos/horarios" element={<Horarios/>}/>
           <Route path="/Formulario/crearEducacionGobal" element={<NewEducacionGlobal/>}/>
           <Route path="/Planificaciones/PlanificacionAcademia" element={<PlanificacionAcademica/>}/>
+          <Route path="/Mantenimientos/calendario" element={<Calendario/>}/>
         </Routes>
       </Aside>
     </Router>
