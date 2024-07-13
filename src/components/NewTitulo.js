@@ -15,8 +15,6 @@ const NewTitulo = (props) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        codigo: value.codigo,
-        nemonico: value.nemonico,
         descripcion: value.descripcion,
       }),
     })
@@ -52,28 +50,6 @@ const NewTitulo = (props) => {
     >
       <Form onFinish={createTitulo} ref={Formulario} layout="vertical">
         <Row>
-          <Col span={24}>
-            <Form.Item
-              label="Código"
-              name="codigo"
-              rules={[
-                { required: true, message: "El campo de código es requerido" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item
-              label="Nemonico"
-              name="nemonico"
-              rules={[
-                { required: true, message: "El campo de nemonico es requerido" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
           <Col span={24}>
             <Form.Item
               label="Descripción"

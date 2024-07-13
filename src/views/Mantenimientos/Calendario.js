@@ -1,34 +1,51 @@
-import React,{ useState,useEffect } from "react";
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
+import React, { useState, useRef } from "react";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 
-const events = [
-  { title: 'Meeting', start: new Date() }
-]
+const initialEvents = [
+  { title: 'Existing Event', start: new Date() }
+];
 
 export function DemoApp() {
+  const [events, setEvents] = useState(initialEvents);
+  const calendarRef = useRef(null);
+
+  const handleSelect = (info) => {
+    const newEventTitle = prompt('Enter a title for the event:');
+    if (newEventTitle) {
+      const newEvent = {
+        title: newEventTitle,
+        start: info.start,
+        end: info.end,
+        allDay: info.allDay
+      };
+      setEvents([...events, newEvent]);
+    }
+  };
+
   return (
     <div>
       <h1>Demo App</h1>
       <FullCalendar
-        plugins={[dayGridPlugin]}
+        ref={calendarRef}
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView='dayGridMonth'
-        weekends={false}
+        headerToolbar={{
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        }}
+        weekends={true}
         events={events}
-        eventContent={renderEventContent}
+        selectable={true}
+        select={handleSelect}
+        dayMaxEventRows={true} // habilitar el límite de eventos visibles por día
+        moreLinkClick="popover" // mostrar eventos adicionales en un popover
       />
     </div>
-  )
-}
-
-// a custom render function
-function renderEventContent(eventInfo) {
-  return (
-    <>
-      <b>{eventInfo.timeText}</b>
-      <i>{eventInfo.event.title}</i>
-    </>
-  )
+  );
 }
 
 export default DemoApp;
