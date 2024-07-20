@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Button, Card, Row, Col, Space, Table, Typography, Menu, Dropdown } from "antd";
 import { SyncOutlined, FileAddOutlined, EditOutlined, DeleteOutlined, MenuOutlined } from "@ant-design/icons";
-import NewTitulo from "../../components/NewTitulo.js";
-import UpdateTitulo from "../../components/UpdateTitulo.js";
+import NewTitulo from "../../components/NewTitulo";
+import UpdateTitulo from "../../components/UpdateTitulo";
 
 const TitulosAcademicos = () => {
   const { Title } = Typography;
   const [titulosData, setTitulos] = useState([]);
   const [isOpenNewTitulo, setIsOpenNewModal] = useState(false);
   const [isOpenUpdateTitulo, setIsOpenUpdateModal] = useState(false);
-  const [formularioEditar, setFormularioEditar] = useState([]);
-  const url = "http://localhost:8000/api/istg/";
+  const [formularioEditar, setFormularioEditar] = useState({});
+  const url = process.env.REACT_APP_BACKEND_HORARIOS;
 
   useEffect(() => {
     getTitulos();
@@ -21,36 +21,41 @@ const TitulosAcademicos = () => {
     setIsOpenUpdateModal(false);
   };
 
-  const getTitulos = () => {
-    fetch(`${url}show_data_titulo_academico`, { method: 'GET' })
-      .then((response) => response.json())
-      .then((data) => {
-        let titulos = data.data.map((value, index) => {
-          return {
-            numero: index + 1,
-            id: value.id_titulo_academico,
-            descripcion: value.descripcion,
-            fecha_creacion: new Date(value.fecha_creacion).toLocaleDateString(),
-            fecha_actualizacion: value.fecha_actualizacion ? new Date(value.fecha_actualizacion).toLocaleDateString() : 'N/A',
-            estado: value.estado === 'A' ? 'Activo' : 'Inactivo'
-          }
-        });
-        setTitulos(titulos);
-      });
+  const getTitulos = async () => {
+    try {
+      const response = await fetch(`${url}show_data_titulo_academico`);
+      if (!response.ok) {
+        throw new Error('Error en la red');
+      }
+      const data = await response.json();
+      let titulos = data.data.map((value, index) => ({
+        numero: index + 1,
+        id: value.id_titulo_academico,
+        descripcion: value.descripcion,
+        fecha_creacion: value.fecha_creacion ? new Date(value.fecha_creacion).toLocaleDateString() : 'N/A',
+        fecha_actualizacion: value.fecha_actualizacion ? new Date(value.fecha_actualizacion).toLocaleDateString() : 'N/A',
+        estado: value.estado === 'A' ? 'Activo' : 'Inactivo'
+      }));
+      setTitulos(titulos);
+    } catch (error) {
+      console.error('Error al obtener los títulos:', error);
+    }
   };
 
   const handleMenuClick = (action, record) => {
     if (action === "editar") {
       setIsOpenUpdateModal(true);
       setFormularioEditar(record);
+    } else if (action === "eliminar") {
+      // Lógica para eliminar
+      console.log("Eliminar:", record);
     }
-    // Agregar lógica de eliminación si es necesario
   };
 
   const menu = (record) => (
     <Menu onClick={({ key }) => handleMenuClick(key, record)}>
-      <Menu.Item key="editar"><EditOutlined /></Menu.Item>
-      <Menu.Item key="eliminar"><DeleteOutlined /></Menu.Item>
+      <Menu.Item key="editar"><EditOutlined /> Editar</Menu.Item>
+      <Menu.Item key="eliminar"><DeleteOutlined /> Eliminar</Menu.Item>
     </Menu>
   );
 
@@ -64,7 +69,7 @@ const TitulosAcademicos = () => {
         <Space style={{ margin: "5px" }}>
           <Row gutter={{ xs: 8, sm: 24, md: 150, lg: 24 }}>
             <Col>
-              <Button icon={<FileAddOutlined />} onClick={() => { setIsOpenNewModal(true) }}>
+              <Button icon={<FileAddOutlined />} onClick={() => setIsOpenNewModal(true)}>
                 Crear Título Académico
               </Button>
             </Col>
@@ -77,7 +82,7 @@ const TitulosAcademicos = () => {
           </Row>
         </Space>
         <Row>
-          <Title level={5}>Cantidad : {titulosData.length}</Title>
+          <Title level={5}>Cantidad: {titulosData.length}</Title>
         </Row>
         <Table
           size="small"
@@ -132,6 +137,6 @@ const TitulosAcademicos = () => {
       <UpdateTitulo open={isOpenUpdateTitulo} handleCloseModal={handleCloseModal} getTitulos={getTitulos} formulario={formularioEditar} />
     </>
   );
-}
+};
 
 export default TitulosAcademicos;

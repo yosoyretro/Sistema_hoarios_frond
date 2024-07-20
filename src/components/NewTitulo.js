@@ -1,61 +1,81 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Modal, Form, Input, Row, Col } from "antd";
+import React, { useRef } from "react";
+import { Modal, Form, Input, Row, Col, Typography, notification } from "antd";
 
 const NewTitulo = (props) => {
-  const [isOpen, setIsOpen] = useState(props.open);
+  const { Title } = Typography;
   const Formulario = useRef(null);
-  const url = "http://localhost:8000/api/istg/";
+  const url = "http://localhost:8000/api/";
 
-  useEffect(() => {
-    setIsOpen(props.open);
-  }, [props.open]);
+  const createTituloAcademico = (values) => {
+    // Configurar los valores por defecto
+    const dataToSend = {
+      descripcion: values.descripcion,
+      id_usuario_creador: 'Admin', // Valor por defecto para id_usuario_creador
+    };
 
-  const createTitulo = (value) => {
     fetch(`${url}create_titulo_academico`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        descripcion: value.descripcion,
-      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataToSend),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        props.getTitulos();
-        Formulario.current.resetFields();
-        props.handleCloseModal();
+      .then((response) => {
+        return response.json().then((data) => ({
+          status: response.status,
+          body: data
+        }));
+      })
+      .then(({ status, body }) => {
+        if (status === 200) {
+          notification.success({
+            message: 'Título académico creado con éxito',
+          });
+          props.getTitulo(); // Llama a la función para obtener la lista actualizada de títulos académicos
+          Formulario.current.resetFields();
+          props.handleCloseModal(); // Cierra el modal
+        } else {
+          notification.error({
+            message: body.error || 'Error al crear el título académico',
+          });
+        }
       })
       .catch((error) => {
-        console.error('A ocurrido un error:', error);
+        notification.error({
+          message: 'Ha ocurrido un error: ' + error.message,
+        });
       });
   };
 
   return (
     <Modal
-      onCancel={() => {
-        if (Formulario.current) {
-          Formulario.current.resetFields();
-        }
-        props.handleCloseModal();
-      }}
+      onCancel={() => props.handleCloseModal()}
       onOk={() => {
-        if (Formulario && Formulario.current) {
+        if (Formulario.current) {
           Formulario.current.submit();
         }
       }}
+      open={props.open}
       size="large"
       okText="Guardar"
       cancelText="Cancelar"
       title="Nuevo Título Académico"
-      open={isOpen}
     >
-      <Form onFinish={createTitulo} ref={Formulario} layout="vertical">
+      <Form
+        onFinish={createTituloAcademico}
+        ref={Formulario}
+        layout="vertical"
+      >
         <Row>
           <Col span={24}>
             <Form.Item
-              label="Descripción"
+              label="Ingrese la descripción del título académico"
               name="descripcion"
               rules={[
-                { required: true, message: "El campo de descripción es requerido" },
+                {
+                  required: true,
+                  message: "El campo de descripción es requerido",
+                },
               ]}
             >
               <Input />
