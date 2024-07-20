@@ -7,6 +7,7 @@ import Materias from "./views/Mantenimientos/Materias";
 import EducacionGlobal from "./views/Mantenimientos/EducacionGlobal";
 import TitulosAcademicos from "./views/Mantenimientos/TitulosAcademicos";
 import Horarios from "./views/Mantenimientos/Horarios";
+import Calendario from "./views/Mantenimientos/Calendario";
 import NewEducacionGlobal from "./views/Formularios/NewEducacionGlobal";
 import Aside from "./components/Aside";
 import PlanificacionAcademica from "./views/Planificaciones/PlanificacionAcademica";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/Mantenimientos/educacionGobal" element={<EducacionGlobal />}/>
           <Route path="/Mantenimientos/materias" element={<Materias/>}/>
           <Route path="/Mantenimientos/tituloacademico" element={<TitulosAcademicos/>}/>
+          <Route path="/Mantenimientos/calendario" element={<Calendario/>}/> 
           <Route path="/Mantenimientos/horarios" element={<Horarios/>}/>
           <Route path="/Formulario/crearEducacionGobal" element={<NewEducacionGlobal/>}/>
           <Route path="/Planificaciones/PlanificacionAcademia" element={<PlanificacionAcademica/>}/>

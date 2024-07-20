@@ -78,54 +78,6 @@ const Usuarios = () => {
                 <Title level={3}>Mantenimiento de usuarios</Title>
             </Row>
             <Card bordered={false}>
-                <Collapse
-                    style={{
-                        background:"#c4c4c41f"
-                    }}
-                    bordered={false}
-                    size="small"
-                    defaultActiveKey={['1']}
-                    expandIcon={<FilterOutlined />} accordion={true} items={[
-                        {
-                            key: 1,
-                            label: 'filtro de busqueda',
-                            children:
-                                <Row gutter={{ xs: 4, sm: 8, md: 16, lg:5 }} style={{
-                                    margin: "10px"
-                                }}>
-                                    <Col sm={8}>
-                                        <label>Ingrese el numero de cedula</label>
-                                        <Input/>
-                                    </Col>
-                                    <Col sm={8}>
-                                        <label>Ingrese sus nombres</label>
-                                        <Input/>
-                                    </Col>
-                                    <Col sm={8}>
-                                        <label>Ingrese sus apellidos</label>
-                                        <Input/>
-                                    </Col>
-
-                                    <Col sm={8}>
-                                        <label>Ingrese el usuario</label>
-                                        <Input/>
-                                    </Col>  
-
-                                    <Col sm={8}>
-                                        <label>Escojar el perfil</label>
-                                        <Select 
-                                        style={{
-                                            width:"100%"
-                                        }}
-                                        defaultValue={"Escoja el perfil"}
-                                        options={[
-                                            {value:'administrador',label:'Administrador'}
-                                        ]}/>
-                                    </Col>
-                                </Row>
-                        }
-                    ]}>
-                </Collapse>
                 <Space style={{
                     margin:"5px"
                 }}>
