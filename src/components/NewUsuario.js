@@ -43,13 +43,8 @@ const NewUsuario = (props) =>{
             id_rol:value.perfil.value
           }),
         }).then((response) => {
-            console.log("Esto fue lo que me trajo lel response")
-            console.log(response)
             return response.json();
           }).then((data) => {
-            console.log("Esto fue lo que me trajo lel response")
-            console.log(data)
-            props.getUser();
             Formulario.current.resetFields();
             props.onCloseModal();
           }).catch((error) => {
