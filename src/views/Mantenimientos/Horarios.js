@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { Button, Card, Col, Collapse, Input, Row,Select, Space, Table } from 'antd';
+import { Button, Card, Col, Collapse, Input, Row,Select, Space, Table, Spin } from 'antd';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Typography from 'antd/es/typography/Typography';
@@ -8,6 +8,8 @@ import { AppstoreAddOutlined, ClearOutlined, FilterOutlined, SearchOutlined, Syn
 import AsignarHorario from '../../components/AsignarHorario';
 
 const Calendario = () => {
+  const [loading,setLoading] = useState(true);
+  const [mensajeLoading,setMensajeLoading] = useState("cargando...");
   const { Title } = Typography;
   const [isOpen,setIsOpen] = useState(false)  
   function closeHandleModal(){
@@ -15,7 +17,8 @@ const Calendario = () => {
   }
 
   return (
-    <div style={{ height: 500 }}>
+    
+    <>
       <Row style={{
                 display:"flex",
                 justifyContent:"center"
@@ -119,8 +122,8 @@ const Calendario = () => {
         />
       </Card>
 
-      <AsignarHorario isOpen={isOpen} closeHandleModal={closeHandleModal}/>
-    </div>
+      <AsignarHorario isOpen={isOpen} closeHandleModal={closeHandleModal} loading={setLoading} mensaje={setMensajeLoading}/>
+    </>
   );
 };
 

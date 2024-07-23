@@ -1,10 +1,12 @@
 import React,{ useState,useEffect } from "react";
-import { Button, Collapse, Input, Table,Typography,Menu,Dropdown,Row,Col,Space,Card } from "antd";
+import { Button, Collapse, Input, Table,Typography,Menu,Dropdown,Row,Col,Space,Card, Spin } from "antd";
 import { SyncOutlined, PlusCircleOutlined,ClearOutlined,SearchOutlined,EditOutlined,DeleteOutlined,MenuOutlined } from "@ant-design/icons";
 import NewCurso from "../../components/NewCurso.js"
 import UpdateCurso from "../../components/UpdateCurso.js"
 const Cursos = () => {
   const { Title } = Typography;
+  const [loading,setLoading] = useState(true);
+  const [mensajeLoading,setMensajeLoading] = useState("cargando...");
   const [isOpenModal,setIsOpen] = useState(false);
   const [isOpenUpdateModal,setIsOpenUpdateModal] = useState(false);
   const [cursoData,setCursoData] = useState([]);
@@ -14,6 +16,7 @@ const Cursos = () => {
     getCurso()
   },[])
   function getCurso(){
+    setLoading(true)
     fetch(`${url}show_nivel`, { method: 'GET' })
           .then((response) => {
             return response.json();
@@ -34,7 +37,11 @@ const Cursos = () => {
 
             setCursoData(curso)
 
-          })
+          }).catch((error) => {
+            console.error("Error fetching data:", error); // Debugging line
+          }).finally(()=>{
+            setLoading(false)
+          });
   }
 
   const menu = (record) => (
@@ -59,6 +66,7 @@ const Cursos = () => {
 
   return (
     <>
+    <Spin spinning={loading} tip={mensajeLoading}></Spin>
       <Row style={{
         display:"flex",
         justifyContent:"center"
@@ -141,7 +149,7 @@ const Cursos = () => {
     </Card>
 
     <NewCurso open={isOpenModal} handleCloseModal={handleCloseModal} getCurso={getCurso}/>
-    <UpdateCurso open={isOpenUpdateModal} handleCloseModal={handleCloseModal} formulario={formularioEditar} getCurso={getCurso}/>
+    <UpdateCurso open={isOpenUpdateModal} handleCloseModal={handleCloseModal} formulario={formularioEditar} getCurso={getCurso} loading={setLoading} mensaje={setMensajeLoading}/>
     </>
     )
 }

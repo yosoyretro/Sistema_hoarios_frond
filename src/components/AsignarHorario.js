@@ -1,6 +1,8 @@
-import { Form, Input, Modal, Select } from "antd";
+import { Form, Input, Modal, Select, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 const AsignarHorario = (props) => {
+    const [loading,setLoading] = useState(true);
+  const [mensajeLoading,setMensajeLoading] = useState("cargando...");
     const [isOpen,setIsOpen] = useState(props.isOpen);
     useEffect(() => {
         setIsOpen(props.isOpen);

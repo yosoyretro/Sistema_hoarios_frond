@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Button, Row, Col, Space, Table, Typography, Menu, Dropdown, Card } from "antd";
+import { Button, Row, Col, Space, Table, Typography, Menu, Dropdown, Card, Spin } from "antd";
 import { SyncOutlined, UserAddOutlined, EditOutlined, DeleteOutlined, MenuOutlined } from "@ant-design/icons";
 import NewPerfil from "../../components/NewPerfil.js";
 import UpdatePerfil from "../../components/UpdatePerfil.js";
 
 const Perfiles = () => {
   const { Title } = Typography;
+  const [loading,setLoading] = useState(true);
+  const [mensajeLoading,setMensajeLoading] = useState("cargando...");
   const [perfilesData, setPerfiles] = useState([]);
   const [isOpeNewPerfil, setIsOpenNewModal] = useState(false);
   const [isOpeUpdatePerfil, setIsOpenUpdateModal] = useState(false);
@@ -22,6 +24,7 @@ const Perfiles = () => {
   }
 
   function getPerfiles() {
+    setLoading(true)
     fetch(`${url}show_roles`, { method: 'GET' })
       .then((response) => {
         if (!response.ok) {
@@ -46,6 +49,8 @@ const Perfiles = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error); // Debugging line
+      }).finally(()=>{
+        setLoading(false)
       });
   }
 
@@ -66,6 +71,7 @@ const Perfiles = () => {
 
   return (
     <>
+    <Spin spinning={loading} tip={mensajeLoading}></Spin>
       <Row style={{ display: "flex", justifyContent: "center" }}>
         <Title level={3}>Mantenimiento de Perfiles</Title>
       </Row>
@@ -134,7 +140,7 @@ const Perfiles = () => {
         />
       </Card>
       <NewPerfil open={isOpeNewPerfil} handleCloseModal={handleCloseModal} getRoles={getPerfiles} />
-      <UpdatePerfil open={isOpeUpdatePerfil} handleCloseModal={handleCloseModal} getRoles={getPerfiles} formulario={formularioEditar} />
+      <UpdatePerfil open={isOpeUpdatePerfil} handleCloseModal={handleCloseModal} getRoles={getPerfiles} formulario={formularioEditar} loading={setLoading} mensaje={setMensajeLoading} />
     </>
   );
 };

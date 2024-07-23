@@ -1,14 +1,17 @@
 import React,{ useState,useEffect } from "react";
-import { Button, Collapse, Input,Row,Col,Space, Table,Typography,Menu,Card,Dropdown } from "antd";
+import { Button, Collapse, Input,Row,Col,Space, Table,Typography,Menu,Card,Dropdown, Spin } from "antd";
 import { SyncOutlined, PlusCircleOutlined,ClearOutlined,SearchOutlined,EditOutlined,DeleteOutlined,MenuOutlined } from "@ant-design/icons";
 import NewParalelo from "../../components/NewParalelo.js"
 const Paralelos = () => {
   const { Title } = Typography;
+  const [loading,setLoading] = useState(true);
+  const [mensajeLoading,setMensajeLoading] = useState("cargando...");
   const [OpenNewModal,setIsOpenNewModal] = useState(false);
   const [dataTabla,setDataTabla] = useState([]);
   const url = "http://localhost:8000/api/istg/";
   
   function getParalelos(){
+    setLoading(true)
     let configuraciones = {
       method:"GET",
       headers:{  
@@ -34,7 +37,11 @@ const Paralelos = () => {
 
         setDataTabla(data_mapeada)
       }
-    })
+    }).catch((error) => {
+      console.error("Error fetching data:", error); // Debugging line
+    }).finally(()=>{
+      setLoading(false)
+    });
 
   }
 
@@ -59,6 +66,7 @@ const Paralelos = () => {
   },[])
   return (
     <>
+    <Spin spinning={loading} tip={mensajeLoading}></Spin>
       <Row style={{
         display:"flex",
         justifyContent:"center"
@@ -134,7 +142,7 @@ const Paralelos = () => {
         dataSource={dataTabla}
       />
       </Card>
-      <NewParalelo open={OpenNewModal} handleCloseModal={handleCloseModal} getParalelos={getParalelos}/>
+      <NewParalelo open={OpenNewModal} handleCloseModal={handleCloseModal} getParalelos={getParalelos} loading={setLoading} mensaje={setMensajeLoading}/>
     </>
   );
 }

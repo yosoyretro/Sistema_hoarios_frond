@@ -1,6 +1,6 @@
 import Card from "antd/es/card/Card";
 import React,{useState,useEffect} from "react"
-import { Button, Collapse, Input, Table,Typography,Menu,Dropdown,Select } from "antd";
+import { Button, Collapse, Input, Table,Typography,Menu,Dropdown,Select, Spin } from "antd";
 import { FilterOutlined, UserOutlined,MenuOutlined,DeleteOutlined,EditOutlined,FolderViewOutlined } from "@ant-design/icons";
 import FormItem from "antd/es/form/FormItem";
 import { Row, Col,Space } from "antd";
@@ -8,6 +8,8 @@ import { UserAddOutlined,ClearOutlined,SearchOutlined,SyncOutlined } from "@ant-
 import NewUsuario from "../../components/NewUsuario.js"
 const Usuarios = () => {
     const { Title } = Typography;
+    const [loading,setLoading] = useState(true);
+    const [mensajeLoading,setMensajeLoading] = useState("cargando...");
     const [isOpenModal,setIsOpen] = useState(false);
     const [dataTabla,setDataTabla] = useState([]);
     const [cantidadRegistro,setCantidadRegistro] = useState(0);
@@ -32,6 +34,7 @@ const Usuarios = () => {
 
 
     function getUser (){
+        setLoading(true)
         fetch(`${url}show_usuario`, { method: 'GET' })
           .then((response) => {
             if (!response.ok) {
@@ -61,6 +64,8 @@ const Usuarios = () => {
           })
           .catch((error) => {
             console.error('Error fetching data:', error);
+          }).finally(()=>{
+            setLoading(false)
           });
 
     }
@@ -71,6 +76,7 @@ const Usuarios = () => {
 
     return (
         <>
+        <Spin spinning={loading} tip={mensajeLoading}></Spin>
             <Row style={{
                 display:"flex",
                 justifyContent:"center"
@@ -171,7 +177,7 @@ const Usuarios = () => {
                 />
 
             </Card>
-            <NewUsuario isOpen={isOpenModal} onCloseModal={handleCloseModal} getUser={getUser}/>
+            <NewUsuario isOpen={isOpenModal} onCloseModal={handleCloseModal} getUser={getUser} loading={setLoading} mensaje={setMensajeLoading}/>
         </>
     )
 }
