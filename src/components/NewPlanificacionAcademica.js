@@ -1,7 +1,7 @@
 import { CiCircleOutlined, DeleteOutlined, EditOutlined, InfoCircleOutlined, InfoOutlined, InsertRowRightOutlined, LeftOutlined, LoadingOutlined, LogoutOutlined, OrderedListOutlined, RightOutlined, VerifiedOutlined } from "@ant-design/icons";
 import Icon from "@ant-design/icons/lib/components/Icon";
 import { render } from "@testing-library/react";
-import { Button, Form, Modal, Result, Row, Select, Space, Spin, Steps, Table, Tree, Typography, Input, Formulario } from "antd";
+import { Button, Form, Modal, Result, Row, Select, Space, Spin, Steps, Table, Tree, Typography, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import Title from "antd/es/skeleton/Title";
 import React, { useEffect, useRef, useState } from "react";
@@ -24,7 +24,6 @@ const NewPlanificacionAcademica = (props) => {
     const [informativo, setInformativo] = useState({})
     const [modalIsOpen, setIsOpen] = useState(props.open)
     const [user, setUser] = useState([]);
-    const Formulario = useRef(null);
     const url = "http://localhost:8000/api/istg/";
     const [pasos, setPasos] = useState([
         {
@@ -297,57 +296,56 @@ const NewPlanificacionAcademica = (props) => {
             label: "Viernes"
         }
     ]
-    
-    async function createDistribucionHorario(value) {
-        console.log("Soy el value");
-        console.log(value);
-    
-        // Validar datos antes de enviar
-        if (!institucionSelect || !carreraSelect || !userSelect || !value.cursos || !value.paralelos || !value.materias || !value.horaini || !value.horafin || !value.dias) {
-            console.error('Faltan datos necesarios para crear la distribución.');
-            // Aquí puedes agregar una notificación al usuario o manejar el error de alguna forma
-            return;
-        }
-    
+    async function createPlanificacionAcademica() {
         try {
-            // Asegúrate de que value.paralelos y value.materias son objetos con la propiedad `value`
-            const idParalelo = Array.isArray(value.paralelos) ? value.paralelos.join(',') : value.paralelos.value;
-            const idMateria = value.materias.value;
-    
-            let response = await fetch(`${url}horario/create_horario`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id_educacion_global: institucionSelect.value,
-                    id_carrera: carreraSelect.value,
-                    id_usuario: userSelect.value,
-                    id_nivel: value.cursos, // Verifica el formato requerido
-                    id_paralelo: idParalelo,
-                    id_periodo: 1,
-                    id_materia: idMateria,
-                    hora_inicio: value.horaini,
-                    hora_termina: value.horafin,
-                    dia: value.dias,
-                }),
+            seguirOpciones(1)
+            let arreglo_obj = []
+            dataSource.forEach(element => {
+                let mapeoData = element.paralelos.map((valor) => {
+                    return {
+                        id_coordinador: userSelect,
+                        id_instituto: institucionSelect,
+                        id_carrera: carreraSelect,
+                        id_materia: element.materia,
+                        id_curso: element.curso,
+                        id_paralelo: valor,
+                        id_periodo_electivo: 1,
+                        dia: element.dias,
+                        hora_inicio: element.horaini,
+                        hora_termina: element.horafin
+                    }
+                })
+                arreglo_obj.push(mapeoData)
             });
-    
-            let data = await response.json();
-    
+            const arregloUnido = arreglo_obj.reduce((acc, current) => acc.concat(current), []);
+
+            let response = await fetch(`${url}horario/create_horario`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ "data": arregloUnido }), })
+            let data = await response.json()
             if (data.ok) {
-                console.log('Operación realizada con éxito:', data.message);
-                Formulario.current.resetFields();
-                props.onCloseModal();
+                setInformativo({
+                    status: "success",
+                    title: "Operacion Realizada con exito",
+                    subTitle: data.message,
+                })
             } else {
-                console.error('Error en la operación:', data.message);
-                // Aquí puedes agregar una notificación al usuario o manejar el error de alguna forma
+                setInformativo({
+                    status: "warning",
+                    title: "A ocurrido un error",
+                    subTitle: data.message,
+                })
             }
-        } catch (error) {
-            console.error('Ha ocurrido un error:', error);
-            // Aquí puedes agregar una notificación al usuario o manejar el error de alguna forma
+            seguirOpciones(2)
+        } catch (Error) {
+            console.error(Error)
+            setInformativo({
+                status: "warning",
+                title: "A ocurrido un error",
+                subTitle: "Error interno en el servidor",
+            })
+            seguirOpciones(2)
         }
     }
-    
-    
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -364,7 +362,7 @@ const NewPlanificacionAcademica = (props) => {
     }, [])
     return (
         <>
-            <Modal open={modalIsOpen} okText="siguiente" footer={false} closeIcon={false} size="small" onOk={createDistribucionHorario} okButtonProps={loading} width={1000}
+            <Modal open={modalIsOpen} okText="siguiente" footer={false} closeIcon={false} size="small" onOk={seguirOpciones} okButtonProps={loading} width={1000}
             >
                 <Spin spinning={loading} tip="Cargando..." size="large" style={{
                     alignItems: "center",
@@ -381,12 +379,12 @@ const NewPlanificacionAcademica = (props) => {
                 {
                     pasosCurret === 0 && (
                         <Form layout="horizontal" ref={formulario} labelAlign="center">
-                            <Form.Item label="Escoja el Instituto" labelCol={{ span: 5 }} name="institucion">
+                            <Form.Item label="Escoja el Instituto" labelCol={{ span: 5 }} name="instituto">
                                 <Select
                                     onChange={(value) => {
                                         setInstitucionSelect(value)
                                     }}
-                                    options={institucion} name="institucion" disabled={loading} />
+                                    options={institucion} name="instituto" disabled={loading} />
                             </Form.Item>
 
                             <Form.Item label="Escoja las carreras" labelCol={{ span: 5 }} name="carreras">
@@ -395,12 +393,12 @@ const NewPlanificacionAcademica = (props) => {
                                 }} />
                             </Form.Item>
 
-                            <Form.Item label="Escoja al coordinador de la carrera" labelCol={{ span: 5 }} name="usuario">
+                            <Form.Item label="Escoja al coordinador de la carrera" labelCol={{ span: 5 }} name="coor_carrera">
                                 <Select
                                     onChange={(value) => {
                                         setUserSelect(value)
                                     }}
-                                    options={user} name="usuario" disabled={loading} />
+                                    options={user} name="coor_carrera" disabled={loading} />
                             </Form.Item>
 
                             <Button onClick={addRow} icon={<InsertRowRightOutlined />}>Agregar Fila</Button>
@@ -540,7 +538,7 @@ const NewPlanificacionAcademica = (props) => {
                             }}>
                                 <Space>
                                     <Button disabled={loading} onClick={props.handleCloseModal} danger type="primary" htmlType="submit"><LeftOutlined /> Cancelar</Button>
-                                    <Button disabled={loading} onClick={createDistribucionHorario} type="primary" htmlType="submit"><RightOutlined /> siguiente paso</Button>
+                                    <Button disabled={loading} onClick={createPlanificacionAcademica} type="primary" htmlType="submit"><RightOutlined /> siguiente paso</Button>
                                 </Space>
                             </Row>
 
