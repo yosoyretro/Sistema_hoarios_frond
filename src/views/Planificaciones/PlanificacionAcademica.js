@@ -7,6 +7,8 @@ const PlanificacionAcademica = () => {
     const { Title } = Typography;
     const [modalIsOpen,setModalIsOpen] = useState(false);
     const [dataTable,setDataTable] = useState([]);
+    const [distribucionData, setDistribucion] = useState([]);
+    const [loading,setLoading] = useState(true);
     const handleMenuClick = (action, record) => {
         console.log(`Se hizo clic en "${action}" para el usuario con cédula ${record}`);
         if(action === "editar"){
@@ -20,43 +22,52 @@ const PlanificacionAcademica = () => {
         </Menu>
     );
 
-    async function showPlanificaciones(){
-        try{
+    useEffect(() => {
+        getDistribucion();
+    }, []);
 
-            let configuraciones = {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json'
+    function getDistribucion() {
+        setLoading(true);
+        fetch(`${url}horario/show_dist_horarios`, { method: 'GET' })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
                 }
-            };
-            let response = await fetch(`${url}Planificaciones/getPlanificacionAcademicas`, configuraciones);
-            let data = await response.json()
-            if(data){
-                if(data.ok){
-                        setDataTable(data.data.map((element,index) => {
-                            return {
-                                id:index,
-                                numero:index+1,
-                                coordinador:element.coordinador,
-                                instituto:element.educacion_global,
-                                fecha_actualizacion:new Date(element.fecha_ultima_actualizacion).toLocaleDateString()
-                            }
-                        }));
-                    
-                }else{
-                    
-                }
-            }
-        }catch(Error){
-
-        }
+                return response.json();
+            })
+            .then((data) => {
+                let Distribucion = data.data.map((value, index) => {
+                    return {
+                        id: value.id_disrtribucion,
+                        id_educacion_global: value.id_educacion_global,
+                        id_carrera: value.id_carrera,
+                        id_usuario: value.id_usuario,
+                        id_materia: value.id_materia,
+                        id_nivel: value.id_nivel,
+                        id_paralelo: value.id_paralelo,
+                        dia: value.dia,
+                        hora_inicio: value.hora_inicio,
+                        hora_termina: value.hora_termina,
+                        fecha_actualizacion: new Date(value.fecha_actualizacion).toLocaleDateString(),
+                        usuarios_ultima_gestion: value.usuarios_ultima_gestion,
+                        estado: value.estado,
+                    };
+                });
+                setDataTable(Distribucion);
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     }
 
     function handleCloseModal(){
         setModalIsOpen(false)
     }
     useEffect(()=>{
-        showPlanificaciones()
+        getDistribucion()
     },[])
     return (
         <>
@@ -64,7 +75,7 @@ const PlanificacionAcademica = () => {
             display:"flex",
             justifyContent:"center"
         }}>
-            <Title level={3}>Planificacion Academica</Title>
+            <Title level={3}>Distribucion Horario</Title>
         </Row>
         <Card bordered={false}>
         
@@ -73,7 +84,7 @@ const PlanificacionAcademica = () => {
                     <Col>
                         <Button icon={<PlusCircleOutlined/>} onClick={()=>{
                             setModalIsOpen(true)
-                        }} type="primary">Crear una planificacion Academica</Button>
+                        }} type="primary">Crear una Distribucion de horarios</Button>
                     </Col>
                     <Col>
                         <Button icon={<SyncOutlined/>} onClick={()=>{}}>Descargar datos</Button>
@@ -83,21 +94,50 @@ const PlanificacionAcademica = () => {
             <Table
                 columns={[
                     {
-                        key:"numero",
-                        dataIndex:"numero",
-                        title:"Nº",
-                        width:10,
-                        align:"center"
-                    },
-                    {
-                        dataIndex:"coordinador",
+                        dataIndex:"id_usuario",
                         title:"Coordinador de carrera",
                         width:50,
                         align:"center"
                     },
                     {
-                        dataIndex:"instituto",
+                        dataIndex:"id_educacion_global",
                         title:"Instituto",
+                        width:50,
+                        align:"center"
+                    },
+                    {
+                        dataIndex:"id_materia",
+                        title:"Materias",
+                        width:50,
+                        align:"center"
+                    },
+                    {
+                        dataIndex:"id_nivel",
+                        title:"Nivel",
+                        width:50,
+                        align:"center"
+                    },
+                    {
+                        dataIndex:"id_paralelo",
+                        title:"Paralelos",
+                        width:50,
+                        align:"center"
+                    },
+                    {
+                        dataIndex:"dia",
+                        title:"Dias",
+                        width:50,
+                        align:"center"
+                    },
+                    {
+                        dataIndex:"hora_inicio",
+                        title:"IHora de Inicio",
+                        width:50,
+                        align:"center"
+                    },
+                    {
+                        dataIndex:"hora_termina",
+                        title:"Hora de Fin",
                         width:50,
                         align:"center"
                     },
