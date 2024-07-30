@@ -1,71 +1,117 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from 'react';
+import { Modal } from 'antd';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
 
-const url = "http://localhost:8000/api/istg/"; // Ajusta según tu configuración
+const getDayDate = (day) => {
+  const today = new Date();
+  const currentDay = today.getDay(); // Domingo = 0, Lunes = 1, etc.
+  const daysOfWeek = ["DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO"];
+  const targetDay = daysOfWeek.indexOf(day.toUpperCase());
 
-const initialEvents = [
-  { title: 'Existing Event', start: new Date() }
-];
+  if (targetDay === -1) return null;
 
-export function DemoApp() {
-  const [events, setEvents] = useState(initialEvents);
-  const calendarRef = useRef(null);
+  const difference = targetDay - currentDay;
+  const targetDate = new Date(today);
+  targetDate.setDate(today.getDate() + difference);
+  return targetDate.toISOString().split('T')[0]; // YYYY-MM-DD
+};
 
-  // Función para obtener las distribuciones de horarios
-  async function getDistribucionHorarios() {
-    try {
-      const response = await fetch(`${url}horario/show_dist_horarios`);
-      const data = await response.json();
-      if (data.ok) {
-        return data.data.map(dist => ({
-          title: dist.materia,
-          start: new Date(`${dist.fecha}T${dist.hora_inicio}`), // Combina la fecha y la hora de inicio
-          end: new Date(`${dist.fecha}T${dist.hora_fin}`) // Combina la fecha y la hora de fin
-        }));
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      console.error("Error fetching distributions:", error);
-      return [];
-    }
-  }
+const MyDynamicCalendar = () => {
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const url = "http://localhost:8000/api/istg/horario/show_dist_horarios";
 
-  // Función para actualizar el calendario
-  async function updateCalendar() {
-    const events = await getDistribucionHorarios();
-    setEvents(events);
-  }
-
-  // Actualizar el calendario al montar el componente
   useEffect(() => {
-    updateCalendar();
+    fetch(url, { method: 'GET' })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data); // Verifica los datos obtenidos
+        const formattedEvents = data.data.map(item => {
+          const date = getDayDate(item.dia);
+          if (!date) return null;
+
+          // Ajuste del formato de la hora
+          const startTime = item.hora_inicio.replace('24:', '00:');
+          const endTime = item.hora_termina.replace('24:', '00:');
+
+          return {
+            title: item.materia,
+            start: `${date}T${startTime}`,
+            end: `${date}T${endTime}`,
+            extendedProps: {
+              instituto: item.educacion_global_nombre,
+              carrera: item.nombre_carrera,
+              nivel: item.nivel,
+              paralelo: item.paralelo,
+              fechaActualizacion: item.fecha_actualizacion
+            }
+          };
+        }).filter(event => event !== null);
+        setEvents(formattedEvents);
+      })
+      .catch(error => console.error("Error fetching data:", error));
   }, []);
 
+  const handleEventClick = (clickInfo) => {
+    setSelectedEvent(clickInfo.event);
+  };
+
+  const handleModalClose = () => {
+    setSelectedEvent(null);
+  };
+
   return (
-    <div>
-      <h1>Demo App</h1>
+    <>
       <FullCalendar
-        ref={calendarRef}
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView='dayGridMonth'
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+        initialView="dayGridMonth" // Cambia a 'listWeek' si prefieres vista de lista por defecto
+        views={{
+          dayGridMonth: {
+            buttonText: 'Mes'
+          },
+          timeGridWeek: {
+            buttonText: 'Semana'
+          },
+          timeGridDay: {
+            buttonText: 'Día'
+          },
+          listWeek: {
+            buttonText: 'Lista'
+          }
+        }}
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         }}
-        weekends={true}
         events={events}
-        selectable={false} // Deshabilitar la selección manual de eventos
-        editable={false} // Deshabilitar la edición manual de eventos
-        dayMaxEventRows={true} // Habilitar el límite de eventos visibles por día
-        moreLinkClick="popover" // Mostrar eventos adicionales en un popover
+        eventClick={handleEventClick}
       />
-    </div>
+      
+      <Modal
+        title={selectedEvent?.title || 'Detalles del Evento'}
+        visible={!!selectedEvent}
+        onCancel={handleModalClose}
+        footer={null}
+      >
+        {selectedEvent ? (
+          <>
+            <p><strong>Instituto:</strong> {selectedEvent.extendedProps.instituto}</p>
+            <p><strong>Carrera:</strong> {selectedEvent.extendedProps.carrera}</p>
+            <p><strong>Nivel:</strong> {selectedEvent.extendedProps.nivel}</p>
+            <p><strong>Paralelo:</strong> {selectedEvent.extendedProps.paralelo}</p>
+            <p><strong>Fecha de Actualización:</strong> {selectedEvent.extendedProps.fechaActualizacion}</p>
+          </>
+        ) : (
+          <p>No hay detalles disponibles.</p>
+        )}
+      </Modal>
+    </>
   );
-}
+};
 
-export default DemoApp;
+export default MyDynamicCalendar;
