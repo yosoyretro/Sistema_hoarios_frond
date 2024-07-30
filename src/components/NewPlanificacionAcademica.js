@@ -296,6 +296,141 @@ const NewPlanificacionAcademica = (props) => {
             label: "Viernes"
         }
     ]
+
+    const hora_inicio = [
+        {
+            value: "07:00",
+            label: "07:00"
+        },
+        {
+            value: "08:00",
+            label: "08:00"
+        },
+        {
+            value: "09:00",
+            label: "09:00"
+        },
+        {
+            value: "10:00",
+            label: "10:00"
+        },
+        {
+            value: "11:00",
+            label: "11:00"
+        },
+        {
+            value: "12:00",
+            label: "12:00"
+        },
+        {
+            value: "13:00",
+            label: "13:00"
+        },
+        {
+            value: "14:00",
+            label: "14:00"
+        },
+        {
+            value: "15:00",
+            label: "15:00"
+        },
+        {
+            value: "16:00",
+            label: "16:00"
+        },
+        {
+            value: "17:00",
+            label: "17:00"
+        },
+        {
+            value: "18:00",
+            label: "18:00"
+        },
+        {
+            value: "19:00",
+            label: "19:00"
+        },
+        {
+            value: "20:00",
+            label: "20:00"
+        },
+        {
+            value: "21:00",
+            label: "21:00"
+        },
+        {
+            value: "22:00",
+            label: "22:00"
+        }
+    ]
+
+    const hora_termina = [
+        {
+            value: "07:00",
+            label: "07:00"
+        },
+        {
+            value: "08:00",
+            label: "08:00"
+        },
+        {
+            value: "09:00",
+            label: "09:00"
+        },
+        {
+            value: "10:00",
+            label: "10:00"
+        },
+        {
+            value: "11:00",
+            label: "11:00"
+        },
+        {
+            value: "12:00",
+            label: "12:00"
+        },
+        {
+            value: "13:00",
+            label: "13:00"
+        },
+        {
+            value: "14:00",
+            label: "14:00"
+        },
+        {
+            value: "15:00",
+            label: "15:00"
+        },
+        {
+            value: "16:00",
+            label: "16:00"
+        },
+        {
+            value: "17:00",
+            label: "17:00"
+        },
+        {
+            value: "18:00",
+            label: "18:00"
+        },
+        {
+            value: "19:00",
+            label: "19:00"
+        },
+        {
+            value: "20:00",
+            label: "20:00"
+        },
+        {
+            value: "21:00",
+            label: "21:00"
+        },
+        {
+            value: "22:00",
+            label: "22:00"
+        }
+    ]
+
     async function createPlanificacionAcademica() {
         try {
             seguirOpciones(1)
@@ -311,8 +446,9 @@ const NewPlanificacionAcademica = (props) => {
                         id_paralelo: valor,
                         id_periodo_electivo: 1,
                         dia: element.dias,
-                        hora_inicio: element.horaini,
-                        hora_termina: element.horafin
+                        hora_inicio: element.hora_inicio,
+                        hora_termina: element.hora_termina,
+                        estado: "A",
                     }
                 })
                 arreglo_obj.push(mapeoData)
@@ -334,16 +470,15 @@ const NewPlanificacionAcademica = (props) => {
                     subTitle: data.message,
                 })
             }
-            seguirOpciones(2)
+            //props.getDistribucion()
         } catch (Error) {
-            console.error(Error)
             setInformativo({
                 status: "warning",
                 title: "A ocurrido un error",
                 subTitle: "Error interno en el servidor",
             })
-            seguirOpciones(2)
         }
+        seguirOpciones(2)
     }
 
     useEffect(() => {
@@ -480,21 +615,37 @@ const NewPlanificacionAcademica = (props) => {
                                         )
                                     },
                                     {
-                                        dataIndex: "horaini",
+                                        dataIndex: "hora_inicio",
                                         title: "Inicia",
                                         align: "center",
                                         width: 250,
                                         render: (text, record, index) => (
-                                            <Input type="time"></Input>
+                                            <Select
+                                                options={hora_inicio}
+                                                defaultValue={"Selecciona la hora"}
+                                                onChange={(value) => {
+                                                    const newData = [...dataSource];
+                                                    newData[index]["hora_inicio"] = value;
+                                                    setDataSource(newData);
+                                                }}
+                                            ></Select>
                                         )
                                     },
                                     {
-                                        dataIndex: "horafin",
+                                        dataIndex: "hora_termina",
                                         title: "Termina",
                                         align: "center",
                                         width: 250,
                                         render: (text, record, index) => (
-                                            <Input type="time"></Input>
+                                            <Select
+                                                options={hora_termina}
+                                                defaultValue={"Selecciona la hora"}
+                                                onChange={(value) => {
+                                                    const newData = [...dataSource];
+                                                    newData[index]["hora_termina"] = value;
+                                                    setDataSource(newData);
+                                                }}
+                                            ></Select>
                                         )
                                     },
                                     {

@@ -38,19 +38,20 @@ const PlanificacionAcademica = () => {
             .then((data) => {
                 let Distribucion = data.data.map((value, index) => {
                     return {
-                        id: value.id_disrtribucion,
-                        id_educacion_global: value.id_educacion_global,
-                        id_carrera: value.id_carrera,
-                        id_usuario: value.id_usuario,
-                        id_materia: value.id_materia,
-                        id_nivel: value.id_nivel,
-                        id_paralelo: value.id_paralelo,
-                        dia: value.dia,
-                        hora_inicio: value.hora_inicio,
-                        hora_termina: value.hora_termina,
-                        fecha_actualizacion: new Date(value.fecha_actualizacion).toLocaleDateString(),
-                        usuarios_ultima_gestion: value.usuarios_ultima_gestion,
-                        estado: value.estado,
+                        index:index+1,
+                        id: value?.id_disrtribucion,
+                        educacion_global: value?.educacion_global_nombre,
+                        carrera: value?.nombre_carrera,
+                        id_usuario: value?.id_usuario,
+                        materia: value?.materia,
+                        nivel: value?.nivel,
+                        paralelo: value?.paralelo,
+                        dia: value?.dia,
+                        hora_inicio: value?.hora_inicio,
+                        hora_termina: value?.hora_termina,
+                        fecha_actualizacion: new Date(value?.fecha_actualizacion).toLocaleDateString(),
+                        usuarios_ultima_gestion: value?.usuarios_ultima_gestion,
+                        estado: value?.estado,
                     };
                 });
                 setDataTable(Distribucion);
@@ -94,31 +95,37 @@ const PlanificacionAcademica = () => {
             <Table
                 columns={[
                     {
-                        dataIndex:"id_usuario",
-                        title:"Coordinador de carrera",
-                        width:50,
+                        dataIndex:"index",
+                        title:"Nº",
+                        width:10,
                         align:"center"
                     },
                     {
-                        dataIndex:"id_educacion_global",
+                        dataIndex:"educacion_global",
                         title:"Instituto",
                         width:50,
                         align:"center"
                     },
                     {
-                        dataIndex:"id_materia",
+                        dataIndex:"carrera",
+                        title:"Carrera",
+                        width:50,
+                        align:"center"
+                    },
+                    {
+                        dataIndex:"materia",
                         title:"Materias",
                         width:50,
                         align:"center"
                     },
                     {
-                        dataIndex:"id_nivel",
+                        dataIndex:"nivel",
                         title:"Nivel",
                         width:50,
                         align:"center"
                     },
                     {
-                        dataIndex:"id_paralelo",
+                        dataIndex:"paralelo",
                         title:"Paralelos",
                         width:50,
                         align:"center"
@@ -163,7 +170,7 @@ const PlanificacionAcademica = () => {
                 dataSource={dataTable}
             />
         </Card>
-        <NewPlanificacionAcademica open={modalIsOpen} handleCloseModal={handleCloseModal}/>
+        <NewPlanificacionAcademica open={modalIsOpen} handleCloseModal={handleCloseModal} getData={getDistribucion}/>
         </>
     );
 }
