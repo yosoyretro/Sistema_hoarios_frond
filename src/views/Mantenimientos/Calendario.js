@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from 'antd';
+import { Modal, Button, Dropdown, Menu } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import * as XLSX from 'xlsx';
 
 const getDayDate = (day) => {
   const today = new Date();
@@ -64,34 +68,81 @@ const MyDynamicCalendar = () => {
     setSelectedEvent(null);
   };
 
+  const exportToPDF = () => {
+    const input = document.getElementById('calendar');
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF();
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save("calendario.pdf");
+    });
+  };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(events.map(event => ({
+      Título: event.title,
+      Inicio: event.start,
+      Fin: event.end,
+      Instituto: event.extendedProps.instituto,
+      Carrera: event.extendedProps.carrera,
+      Nivel: event.extendedProps.nivel,
+      Paralelo: event.extendedProps.paralelo,
+      'Fecha de Actualización': event.extendedProps.fechaActualizacion
+    })));
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Calendario');
+    XLSX.writeFile(workbook, 'calendario.xlsx');
+  };
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="1" onClick={exportToPDF}>
+        Exportar a PDF
+      </Menu.Item>
+      <Menu.Item key="2" onClick={exportToExcel}>
+        Exportar a Excel
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <>
-      <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-        initialView="dayGridMonth" // Cambia a 'listWeek' si prefieres vista de lista por defecto
-        views={{
-          dayGridMonth: {
-            buttonText: 'Mes'
-          },
-          timeGridWeek: {
-            buttonText: 'Semana'
-          },
-          timeGridDay: {
-            buttonText: 'Día'
-          },
-          listWeek: {
-            buttonText: 'Lista'
-          }
-        }}
-        headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-        }}
-        events={events}
-        eventClick={handleEventClick}
-      />
-      
+      <Dropdown overlay={menu} style={{ marginBottom: '10px' }}>
+        <Button>
+          Exportar <DownOutlined />
+        </Button>
+      </Dropdown>
+      <div id="calendar">
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+          initialView="dayGridMonth"
+          views={{
+            dayGridMonth: {
+              buttonText: 'Mes'
+            },
+            timeGridWeek: {
+              buttonText: 'Semana'
+            },
+            timeGridDay: {
+              buttonText: 'Día'
+            },
+            listWeek: {
+              buttonText: 'Lista'
+            }
+          }}
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+          }}
+          events={events}
+          eventClick={handleEventClick}
+        />
+      </div>
+
       <Modal
         title={selectedEvent?.title || 'Detalles del Evento'}
         visible={!!selectedEvent}
